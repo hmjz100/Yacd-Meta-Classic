@@ -3,7 +3,6 @@ export function createResource(getPromise: (key: string) => Promise<any>) {
   let cache = {};
   const inflight = {};
   const errors = {};
-
   function load(key = 'default') {
     inflight[key] = getPromise(key)
       .then((val) => {
@@ -15,12 +14,10 @@ export function createResource(getPromise: (key: string) => Promise<any>) {
       });
     return inflight[key];
   }
-
   function preload(key = 'default') {
     if (cache[key] !== undefined || inflight[key]) return;
     load(key);
   }
-
   function read(key = 'default') {
     if (cache[key] !== undefined) {
       return cache[key];
@@ -32,7 +29,6 @@ export function createResource(getPromise: (key: string) => Promise<any>) {
       throw load(key);
     }
   }
-
   function clear(key: 'default') {
     if (key) {
       delete cache[key];
@@ -40,6 +36,5 @@ export function createResource(getPromise: (key: string) => Promise<any>) {
       cache = {};
     }
   }
-
   return { preload, read, clear };
 }

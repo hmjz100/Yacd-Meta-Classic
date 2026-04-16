@@ -14,9 +14,7 @@ import { getClashAPIConfig } from '~/store/app';
 import { ClashAPIConfig } from '~/types';
 
 import s from './SideBar.module.scss';
-
 type Props = { apiConfig: ClashAPIConfig };
-
 const icons = {
   activity: FcAreaChart,
   globe: FcGlobe,
@@ -25,7 +23,6 @@ const icons = {
   settings: FcSettings,
   link: FcLink,
 };
-
 const SideBarRow = React.memo(function SideBarRow({
   isActive,
   to,
@@ -41,17 +38,15 @@ const SideBarRow = React.memo(function SideBarRow({
     </Link>
   );
 });
-
 interface SideBarRowProps {
   isActive: boolean;
   to: string;
   iconId?: string;
   labelText?: string;
 }
-
 const pages = [
   {
-    to: '/home',
+    to: '/',
     iconId: 'activity',
     labelText: 'Overview',
   },
@@ -71,27 +66,23 @@ const pages = [
     labelText: 'Conns',
   },
   {
-    to: '/logs',
-    iconId: 'file',
-    labelText: 'Logs',
-  },
-  {
     to: '/configs',
     iconId: 'settings',
     labelText: 'Config',
   },
+  {
+    to: '/logs',
+    iconId: 'file',
+    labelText: 'Logs',
+  },
 ];
-
 const mapState = (s) => ({
   apiConfig: getClashAPIConfig(s),
 });
-
 export default connect(mapState)(SideBar);
-
 function SideBar(props: Props) {
   const { t } = useTranslation();
   const location = useLocation();
-
   const { data: version } = useQuery(['/version', props.apiConfig], () =>
     fetchVersion('/version', props.apiConfig)
   );

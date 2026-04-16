@@ -2,7 +2,6 @@ import cx from 'clsx';
 import * as React from 'react';
 
 import s from './SvgYacd.module.scss';
-
 type Props = {
   width?: number;
   height?: number;
@@ -13,7 +12,6 @@ type Props = {
   eye?: string;
   line?: string;
 };
-
 function SvgYacd({
   width = 320,
   height = 320,
@@ -88,5 +86,4 @@ function SvgYacd({
     </svg>
   );
 }
-
 export default SvgYacd;

@@ -1,12 +1,10 @@
 .iconWrapper {
   --sz: 40px;
-
   width: var(--sz);
   height: var(--sz);
   display: flex;
   justify-content: center;
   align-items: center;
-
   outline: none;
   padding: 5px;
   color: var(--color-text);
@@ -17,15 +15,11 @@
 .iconWrapper:focus {
   border-color: var(--color-focus-blue);
 }
-
 .themeSwitchContainer {
   --sz: 40px;
-
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: var(--sz);
   height: var(--sz);
   select {
     cursor: pointer;

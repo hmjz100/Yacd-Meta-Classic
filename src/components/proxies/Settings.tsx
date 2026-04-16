@@ -2,38 +2,29 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Select from '~/components/shared/Select';
-import { PROXY_SORT_OPTIONS } from '~/modules/proxies/utils';
 
-import { useStoreActions } from '../StateProvider';
+import { getAutoCloseOldConns, getHideUnavailableProxies, getProxySortBy } from '../../store/app';
+import { connect, useStoreActions } from '../StateProvider';
 import Switch from '../SwitchThemed';
-
 import s from './Settings.module.scss';
-
+const options = [
+  ['Natural', 'order_natural'],
+  ['LatencyAsc', 'order_latency_asc'],
+  ['LatencyDesc', 'order_latency_desc'],
+  ['NameAsc', 'order_name_asc'],
+  ['NameDesc', 'order_name_desc'],
+];
 const { useCallback } = React;
-
-type AppConfig = {
-  proxySortBy: string;
-  hideUnavailableProxies: boolean;
-  autoCloseOldConns: boolean;
-  proxiesLayout: string;
-};
-
-type Props = {
-  appConfig: AppConfig;
-};
-
-export default function Settings({ appConfig }: Props) {
+function Settings({ appConfig }) {
   const {
     app: { updateAppConfig },
   } = useStoreActions();
-
   const handleProxySortByOnChange = useCallback(
     (e) => {
       updateAppConfig('proxySortBy', e.target.value);
     },
     [updateAppConfig]
   );
-
   const handleHideUnavailablesSwitchOnChange = useCallback(
     (v) => {
       updateAppConfig('hideUnavailableProxies', v);
@@ -47,7 +38,7 @@ export default function Settings({ appConfig }: Props) {
         <span>{t('sort_in_grp')}</span>
         <div>
           <Select
-            options={PROXY_SORT_OPTIONS.map((o) => {
+            options={options.map((o) => {
               return [o[0], t(o[1])];
             })}
             selected={appConfig.proxySortBy}
@@ -76,16 +67,19 @@ export default function Settings({ appConfig }: Props) {
           />
         </div>
       </div>
-      <div className={s.labeledInput}>
-        <span>{t('double_column_layout')}</span>
-        <div>
-          <Switch
-            name="proxiesLayout"
-            checked={appConfig.proxiesLayout === 'double'}
-            onChange={(v) => updateAppConfig('proxiesLayout', v ? 'double' : 'single')}
-          />
-        </div>
-      </div>
     </>
   );
 }
+const mapState = (s) => {
+  const proxySortBy = getProxySortBy(s);
+  const hideUnavailableProxies = getHideUnavailableProxies(s);
+  const autoCloseOldConns = getAutoCloseOldConns(s);
+  return {
+    appConfig: {
+      proxySortBy,
+      hideUnavailableProxies,
+      autoCloseOldConns,
+    },
+  };
+};
+export default connect(mapState)(Settings);

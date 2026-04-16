@@ -3,24 +3,39 @@ import * as React from 'react';
 import { Eye, EyeOff, X as Close } from 'react-feather';
 
 import { useToggle } from '~/hooks/basic';
-import type { ClashAPIConfigWithAddedAt } from '~/store/types';
-import type { ClashAPIConfig } from '~/types';
+import { getClashAPIConfigs, getSelectedClashAPIConfigIndex } from '~/store/app';
+import { ClashAPIConfig } from '~/types';
 
 import s from './BackendList.module.scss';
-
-type Props = {
-  apiConfigs: ClashAPIConfigWithAddedAt[];
-  selectedClashAPIConfigIndex: number;
-  onRemove: (x: ClashAPIConfig) => void;
-  onSelect: (x: ClashAPIConfig) => void;
-};
-
-export function BackendList({
+import { connect, useStoreActions } from './StateProvider';
+type Config = ClashAPIConfig & { addedAt: number };
+const mapState = (s) => ({
+  apiConfigs: getClashAPIConfigs(s),
+  selectedClashAPIConfigIndex: getSelectedClashAPIConfigIndex(s),
+});
+export const BackendList = connect(mapState)(BackendListImpl);
+function BackendListImpl({
   apiConfigs,
   selectedClashAPIConfigIndex,
-  onRemove,
-  onSelect,
-}: Props) {
+}: {
+  apiConfigs: Config[];
+  selectedClashAPIConfigIndex: number;
+}) {
+  const {
+    app: { removeClashAPIConfig, selectClashAPIConfig },
+  } = useStoreActions();
+  const onRemove = React.useCallback(
+    (conf: ClashAPIConfig) => {
+      removeClashAPIConfig(conf);
+    },
+    [removeClashAPIConfig]
+  );
+  const onSelect = React.useCallback(
+    (conf: ClashAPIConfig) => {
+      selectClashAPIConfig(conf);
+    },
+    [selectClashAPIConfig]
+  );
   return (
     <>
       <ul className={s.ul}>
@@ -47,7 +62,6 @@ export function BackendList({
     </>
   );
 }
-
 function Item({
   baseURL,
   secret,
@@ -56,18 +70,16 @@ function Item({
   onSelect,
 }: {
   baseURL: string;
-  secret?: string;
+  secret: string;
   disableRemove: boolean;
   onRemove: (x: ClashAPIConfig) => void;
   onSelect: (x: ClashAPIConfig) => void;
 }) {
   const [show, toggle] = useToggle();
   const Icon = show ? EyeOff : Eye;
-
   const handleTap = React.useCallback((e: React.KeyboardEvent) => {
     e.stopPropagation();
   }, []);
-
   return (
     <>
       <Button
@@ -90,7 +102,7 @@ function Item({
       {secret ? (
         <>
           <span className={s.secret}>{show ? secret : '***'}</span>
-
+          {/* @ts-expect-error ts-migrate(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message */}
           <Button onClick={toggle} className={s.eye}>
             <Icon size={20} />
           </Button>
@@ -99,7 +111,6 @@ function Item({
     </>
   );
 }
-
 function Button({
   children,
   onClick,
@@ -107,7 +118,6 @@ function Button({
   disabled,
 }: {
   children: React.ReactNode;
-
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => unknown;
   className: string;
   disabled?: boolean;

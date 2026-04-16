@@ -13,16 +13,18 @@ export function IsFetching({ children }: { children: React.ReactNode }) {
 
 export const position = {
   right: 10,
-  bottom: 10,
+  bottom: 50,
 };
 
 interface ABProps extends React.HTMLAttributes<HTMLButtonElement> {
   text?: string;
+  style?: React.CSSProperties;
   onClick?: (e: React.FormEvent) => void;
+  closeOnClick?: boolean;
   'data-testid'?: string;
 }
 
-const AB: React.FC<ABProps> = ({ children, ...p }) => (
+const AB: React.FC<ABProps> = ({ children, closeOnClick: _closeOnClick = true, ...p }) => (
   <button type="button" {...p} className="rtf--ab">
     {children}
   </button>
@@ -30,18 +32,29 @@ const AB: React.FC<ABProps> = ({ children, ...p }) => (
 
 interface MBProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'tabIndex'> {
   tabIndex?: number;
+  isOpen?: boolean;
 }
 
-export const MB: React.FC<MBProps> = ({ children, ...p }) => (
+// 主按钮组件：处理旋转动画
+export const MB: React.FC<MBProps> = ({ children, isOpen, ...p }) => (
   <button type="button" className="rtf--mb" {...p}>
-    {children}
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'transform 0.25s ease-out',
+        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', // 点击后 + 变 x
+      }}
+    >
+      {children}
+    </div>
   </button>
 );
 
 const defaultStyles: React.CSSProperties = { bottom: 24, right: 24 };
 
 interface FabProps {
-  event?: 'hover' | 'click';
   style?: React.CSSProperties;
   alwaysShowTitle?: boolean;
   icon?: React.ReactNode;
@@ -52,7 +65,6 @@ interface FabProps {
 }
 
 const Fab: React.FC<FabProps> = ({
-  event = 'hover',
   style = defaultStyles,
   alwaysShowTitle = false,
   children,
@@ -64,29 +76,35 @@ const Fab: React.FC<FabProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ariaHidden = alwaysShowTitle || !isOpen;
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
-  const enter = () => event === 'hover' && open();
-  const leave = () => event === 'hover' && close();
+
+  // 核心逻辑：切换开关
   const toggle = (e: React.FormEvent) => {
-    if (onClick) {
-      return onClick(e);
-    }
+    // 如果外部传入了 onClick 则完全接管逻辑（通常不建议）
+    if (onClick) return onClick(e);
+
     e.persist();
-    return event === 'click' ? (isOpen ? close() : open()) : null;
+    setIsOpen(!isOpen); // 纯粹的开关切换
   };
 
-  const actionOnClick = (e: React.FormEvent, userFunc: (e: React.FormEvent) => void) => {
+  const actionOnClick = (
+    e: React.FormEvent,
+    userFunc: (e: React.FormEvent) => void,
+    closeOnClick: boolean
+  ) => {
     e.persist();
-    setIsOpen(false);
+    if (closeOnClick) {
+      setIsOpen(false);
+    }
     setTimeout(() => {
       userFunc(e);
     }, 1);
   };
 
-  const rc = () =>
+  const renderActions = () =>
     React.Children.map(children, (ch, i) => {
       if (React.isValidElement<ABProps>(ch)) {
+        const { closeOnClick = true, onClick: childOnClick, style: childStyle } = ch.props;
+
         return (
           <li className={`rtf--ab__c ${'top' in style ? 'top' : ''}`}>
             {React.cloneElement(ch, {
@@ -94,9 +112,13 @@ const Fab: React.FC<FabProps> = ({
               'aria-label': ch.props.text || `Menu button ${i + 1}`,
               'aria-hidden': ariaHidden,
               tabIndex: isOpen ? 0 : -1,
+              // 合并样式：优先级为 默认Action样式 < Fab传入的mainButtonStyles < Action组件自带的style
+              style: { ...mainButtonStyles, ...childStyle },
               ...ch.props,
               onClick: (e: React.FormEvent) => {
-                if (ch.props.onClick) actionOnClick(e, ch.props.onClick);
+                if (childOnClick) {
+                  actionOnClick(e, childOnClick, closeOnClick);
+                }
               },
             })}
             {ch.props.text && (
@@ -116,21 +138,15 @@ const Fab: React.FC<FabProps> = ({
     });
 
   return (
-    <ul
-      onMouseEnter={enter}
-      onMouseLeave={leave}
-      className={`rtf ${isOpen ? 'open' : 'closed'}`}
-      data-testid="fab"
-      style={style}
-      {...p}
-    >
+    <ul className={`rtf ${isOpen ? 'open' : 'closed'}`} data-testid="fab" style={style} {...p}>
       <li className="rtf--mb__c">
         <MB
-          onClick={toggle}
+          onClick={toggle} // 只有点击才能触发
           style={mainButtonStyles}
+          isOpen={isOpen}
           data-testid="main-button"
           role="button"
-          aria-label="Floating menu"
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
           tabIndex={0}
         >
           {icon}
@@ -143,7 +159,8 @@ const Fab: React.FC<FabProps> = ({
             {text}
           </span>
         )}
-        <ul>{rc()}</ul>
+        {/* 只有 isOpen 时子列表才会显示相关的动画（受 CSS 控制） */}
+        <ul>{renderActions()}</ul>
       </li>
     </ul>
   );

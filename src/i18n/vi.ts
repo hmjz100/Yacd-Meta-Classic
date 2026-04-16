@@ -47,7 +47,8 @@ export const data = {
   reload_config_file: 'Tải lại tệp cấu hình',
   restart_core: 'Khởi động lõi lại Clash',
   upgrade_core: 'Nâng cấp lõi Clash',
-  update_geo_databases_file: 'Cập nhật tệp cơ sở dữ liệu GEO',
+  upgrade_geo: 'Cập nhật cơ sở dữ liệu GEO',
+  upgrade_ui: 'Cập nhật giao diện bảng điều khiển',
   flush_fake_ip_pool: 'Xóa bộ nhớ đệm fake-ip',
   enable_tun_device: 'Bật thiết bị TUN',
   allow_lan: 'Cho phép LAN',
@@ -79,5 +80,4 @@ export const data = {
     'Thêm / vào đầu để sử dụng biểu thức chính quy, nếu không sẽ là kết quả khớp chính xác(By Ohoang7)',
   disconnect: 'Đóng kết nối',
   internel: 'Kết nối nội bộ',
-  Clear: 'Dọn dẹp',
 };

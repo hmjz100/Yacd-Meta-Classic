@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { GitHub } from 'react-feather';
+import { useQuery } from 'react-query';
 
+import { fetchVersion } from '~/api/version';
 import ContentHeader from '~/components/ContentHeader';
-import { useAboutVersionQuery } from '~/modules/about/hooks';
-import { getCoreVersionMeta } from '~/modules/about/utils';
+import { connect } from '~/components/StateProvider';
+import { getClashAPIConfig } from '~/store/app';
 import { ClashAPIConfig } from '~/types';
 
 import s from './About.module.scss';
-
 type Props = { apiConfig: ClashAPIConfig };
-
 function Version({ name, link, version }: { name: string; link: string; version: string }) {
   return (
     <div className={s.root}>
@@ -27,22 +27,37 @@ function Version({ name, link, version }: { name: string; link: string; version:
     </div>
   );
 }
-
-export function About({ apiConfig }: Props) {
-  const { data: version } = useAboutVersionQuery(apiConfig);
-  const coreVersionMeta = getCoreVersionMeta(version);
-
+function AboutImpl(props: Props) {
+  const { data: version } = useQuery(['/version', props.apiConfig], () =>
+    fetchVersion('/version', props.apiConfig)
+  );
   return (
     <>
       <ContentHeader title="About" />
-      {coreVersionMeta && version?.version ? (
+      {version && version.version ? (
         <Version
-          name={coreVersionMeta.name}
+          name={
+            version.meta && version.premium ? 'sing-box' : version.meta ? 'Clash Meta' : 'Clash'
+          }
           version={version.version}
-          link={coreVersionMeta.link}
+          link={
+            version.meta && version.premium
+              ? 'https://github.com/SagerNet/sing-box'
+              : version.meta
+              ? 'https://github.com/MetaCubeX/Clash.Meta'
+              : 'https://github.com/Dreamacro/clash'
+          }
         />
       ) : null}
-      <Version name="Yacd" version={__VERSION__} link="https://github.com/metacubex/yacd" />
+      <Version
+        name="Yacd Meta Classic Enchance"
+        version={__VERSION__}
+        link="https://github.com/hmjz100/Yacd-Meta-Classic"
+      />
     </>
   );
 }
+const mapState = (s) => ({
+  apiConfig: getClashAPIConfig(s),
+});
+export const About = connect(mapState)(AboutImpl);

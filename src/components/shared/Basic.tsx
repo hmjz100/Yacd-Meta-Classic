@@ -1,7 +1,6 @@
 import React from 'react';
 
 import s from './Basic.module.scss';
-
 export function SectionNameType({ name, type }) {
   return (
     <h2 className={s.sectionNameType}>
@@ -10,7 +9,6 @@ export function SectionNameType({ name, type }) {
     </h2>
   );
 }
-
 export function LoadingDot() {
   return <span className={s.loadingDot} />;
 }

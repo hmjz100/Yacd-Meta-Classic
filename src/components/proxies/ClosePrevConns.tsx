@@ -2,21 +2,17 @@ import * as React from 'react';
 
 import Button from '../Button';
 import { FlexCenter } from '../shared/Styled';
-
 const { useRef, useEffect } = React;
-
 type Props = {
   onClickPrimaryButton?: () => void;
   onClickSecondaryButton?: () => void;
 };
-
 export function ClosePrevConns({ onClickPrimaryButton, onClickSecondaryButton }: Props) {
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const secondaryButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     primaryButtonRef.current.focus();
   }, []);
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.keyCode === 39) {
       secondaryButtonRef.current.focus();
@@ -24,7 +20,6 @@ export function ClosePrevConns({ onClickPrimaryButton, onClickSecondaryButton }:
       primaryButtonRef.current.focus();
     }
   };
-
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div onKeyDown={handleKeyDown}>

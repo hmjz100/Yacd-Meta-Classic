@@ -15,13 +15,11 @@
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14),
     0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-
 .rtf.open .rtf--mb > ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .rtf.open .rtf--ab__c:hover > span {
   transition: ease-in-out opacity 0.2s;
   opacity: 0.9;
@@ -72,7 +70,6 @@
 .rtf.open .rtf--ab__c:nth-child(6).top {
   transform: translateY(360px) scale(1);
 }
-
 .rtf--mb__c {
   padding: 25px;
   margin: -25px;
@@ -106,7 +103,6 @@
 .rtf--mb__c > span.right {
   right: 100%;
 }
-
 .rtf--mb {
   width: 48px;
   height: 48px;
@@ -130,7 +126,6 @@
 .rtf--mb > * {
   transition: ease-in-out transform 0.2s;
 }
-
 .rtf--ab__c {
   display: block;
   position: absolute;
@@ -199,7 +194,6 @@
 .rtf--ab__c:nth-child(6).top {
   transform: translateY(360px) scale(0);
 }
-
 .rtf--ab {
   height: 40px;
   width: 40px;
@@ -221,13 +215,11 @@
   font-size: 16px;
   z-index: 10000;
 }
-
 .rtf--ab:hover {
   background: var(--color-focus-blue);
   border: 1px solid var(--color-focus-blue);
   color: #fff;
 }
-
 .rtf--ab:focus {
   border-color: var(--color-focus-blue);
 }

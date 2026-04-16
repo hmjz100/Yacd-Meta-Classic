@@ -2,7 +2,6 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
-
 const allLocales = {
   zh_cn: import('~/i18n/zh-cn'),
   zh_tw: import('~/i18n/zh-tw'),
@@ -10,9 +9,7 @@ const allLocales = {
   vi: import('~/i18n/vi'),
   ru: import('~/i18n/ru'),
 };
-
 type BackendRequestCallback = (err: null, result: { status: number; data: any }) => void;
-
 i18next
   .use(HttpBackend)
   .use(initReactI18next)
@@ -29,7 +26,6 @@ i18next
         callback: BackendRequestCallback
       ) {
         let p: PromiseLike<{ data: any }>;
-
         switch (url) {
           case '/__zh/translation.json':
           case '/__zh-CN/translation.json':
@@ -51,7 +47,6 @@ i18next
             p = allLocales.zh_cn;
             break;
         }
-
         if (p) {
           p.then((mod) => {
             callback(null, { status: 200, data: mod.data });
@@ -66,9 +61,7 @@ i18next
       escapeValue: false,
     },
   });
-
 if (process.env.NODE_ENV === 'development') {
   window.i18n = i18next;
 }
-
 export default i18next;

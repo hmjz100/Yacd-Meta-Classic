@@ -6,9 +6,7 @@ import Modal from 'react-modal';
 import Button from './Button';
 import modalStyle from './Modal.module.scss';
 import s from './ModalCloseAllConnections.module.scss';
-
 const { useRef, useCallback, useMemo } = React;
-
 export default function Comp({
   confirm = 'close_all_confirm',
   isOpen,

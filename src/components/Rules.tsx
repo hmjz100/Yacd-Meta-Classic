@@ -1,29 +1,52 @@
-import cx from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { areEqual, VariableSizeList } from 'react-window';
 
-import ContentHeader from '~/components/ContentHeader';
 import { RuleProviderItem } from '~/components/rules/RuleProviderItem';
+import { useRuleAndProvider } from '~/components/rules/rules.hooks';
 import { RulesPageFab } from '~/components/rules/RulesPageFab';
 import { TextFilter } from '~/components/shared/TextFitler';
-import { useRulesPage } from '~/modules/rules/hooks';
-import { formatQty, getItemSizeFactory, itemKey, RulesListItemData } from '~/modules/rules/utils';
 import { ruleFilterText } from '~/store/rules';
+import { State } from '~/store/types';
 import { ClashAPIConfig } from '~/types';
 
 import useRemainingViewPortHeight from '../hooks/useRemainingViewPortHeight';
-
+import { getClashAPIConfig } from '../store/app';
+import ContentHeader from './ContentHeader';
 import Rule from './Rule';
 import s from './Rules.module.scss';
-
+import { connect } from './StateProvider';
 const { memo } = React;
-
+const paddingBottom = 30;
+type ItemData = {
+  rules: any[];
+  provider: any;
+  apiConfig: ClashAPIConfig;
+};
+function itemKey(index: number, { rules, provider }: ItemData) {
+  const providerQty = provider.names.length;
+  if (index < providerQty) {
+    return provider.names[index];
+  }
+  const item = rules[index - providerQty];
+  return item.id;
+}
+function getItemSizeFactory({ provider }) {
+  return function getItemSize(idx: number) {
+    const providerQty = provider.names.length;
+    if (idx < providerQty) {
+      // provider
+      return 90;
+    }
+    // rule
+    return 60;
+  };
+}
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'index' does not exist on type '{ childre... Remove this comment to see the full error message
 const Row = memo(({ index, style, data }) => {
   const { rules, provider, apiConfig } = data;
-
-  if (!rules) {
+  const providerQty = provider.names.length;
+  if (index < providerQty) {
     const name = provider.names[index];
     const item = provider.byName[name];
     return (
@@ -32,66 +55,38 @@ const Row = memo(({ index, style, data }) => {
       </div>
     );
   }
-
-  const r = rules[index];
+  const r = rules[index - providerQty];
   return (
     <div style={style}>
       <Rule {...r} />
     </div>
   );
 }, areEqual);
-
+const mapState = (s: State) => ({
+  apiConfig: getClashAPIConfig(s),
+});
+export default connect(mapState)(Rules);
 type RulesProps = {
   apiConfig: ClashAPIConfig;
 };
-
-export default function Rules({ apiConfig }: RulesProps) {
+function Rules({ apiConfig }: RulesProps) {
   const [refRulesContainer, containerHeight] = useRemainingViewPortHeight();
-  const { rules, provider, activeTab, setActiveTab, isRulesTab, handleTabKeyDown } =
-    useRulesPage(apiConfig);
-  const getItemSize = getItemSizeFactory({ isRulesTab });
-
+  const { rules, provider } = useRuleAndProvider(apiConfig);
+  const getItemSize = getItemSizeFactory({ provider });
   const { t } = useTranslation();
-
   return (
-    <div className={s.container}>
-      <ContentHeader>
-        <div className={s.tabsContainer}>
-          <div
-            className={cx(s.tab, { [s.active]: activeTab === 'rules' })}
-            onClick={() => setActiveTab('rules')}
-            onKeyDown={handleTabKeyDown('rules')}
-            role="button"
-            tabIndex={0}
-          >
-            {t('Rules')}
-            <span className={s.tabCount}>{formatQty(rules.length)}</span>
-          </div>
-          {provider.names.length > 0 && (
-            <div
-              className={cx(s.tab, { [s.active]: activeTab === 'providers' })}
-              onClick={() => setActiveTab('providers')}
-              onKeyDown={handleTabKeyDown('providers')}
-              role="button"
-              tabIndex={0}
-            >
-              {t('rule_provider')}
-              <span className={s.tabCount}>{formatQty(provider.names.length)}</span>
-            </div>
-          )}
-        </div>
-        <div style={{ flex: 1 }} />
-        <div className={s.filterWrapper}>
-          <TextFilter textAtom={ruleFilterText} placeholder={t('Search')} />
-        </div>
-      </ContentHeader>
-      <div ref={refRulesContainer} className={s.listWrapper}>
+    <div>
+      <div className={s.header}>
+        <ContentHeader title={t('Rules')} />
+        <TextFilter textAtom={ruleFilterText} placeholder={t('Search')} />
+      </div>
+      <div ref={refRulesContainer} style={{ paddingBottom }}>
         <VariableSizeList
-          height={containerHeight}
+          height={containerHeight - paddingBottom}
           width="100%"
-          itemCount={isRulesTab ? rules.length : provider.names.length}
+          itemCount={rules.length + provider.names.length}
           itemSize={getItemSize}
-          itemData={{ rules: isRulesTab ? rules : null, provider, apiConfig } as RulesListItemData}
+          itemData={{ rules, provider, apiConfig }}
           itemKey={itemKey}
         >
           {Row}

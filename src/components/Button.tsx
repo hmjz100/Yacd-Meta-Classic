@@ -3,16 +3,13 @@ import * as React from 'react';
 
 import s0 from './Button.module.scss';
 import { LoadingDot } from './shared/Basic';
-
 const { forwardRef, useCallback } = React;
-
 type ButtonInternalProps = {
   children?: React.ReactNode;
   label?: string;
   text?: string;
   start?: React.ReactNode | (() => React.ReactNode);
 };
-
 type ButtonProps = {
   isLoading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => unknown;
@@ -21,7 +18,6 @@ type ButtonProps = {
   className?: string;
   title?: string;
 } & ButtonInternalProps;
-
 function Button(props: ButtonProps, ref: React.Ref<HTMLButtonElement>) {
   const {
     onClick,
@@ -67,7 +63,6 @@ function Button(props: ButtonProps, ref: React.Ref<HTMLButtonElement>) {
     </button>
   );
 }
-
 function ButtonInternal({ children, label, text, start }: ButtonInternalProps) {
   return (
     <div className={s0.btnInternal}>
@@ -78,5 +73,4 @@ function ButtonInternal({ children, label, text, start }: ButtonInternalProps) {
     </div>
   );
 }
-
 export default forwardRef(Button);

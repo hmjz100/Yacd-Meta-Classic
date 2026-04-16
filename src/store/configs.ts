@@ -10,13 +10,10 @@ import { ClashAPIConfig } from '~/types';
 
 import * as configsAPI from '../api/configs';
 import * as trafficAPI from '../api/traffic';
-
 import { openModal } from './modals';
-
 export const getConfigs = (s: State) => s.configs.configs;
 export const getHaveFetched = (s: State) => s.configs.haveFetchedConfig;
 export const getLogLevel = (s: State) => s.configs.configs['log-level'];
-
 export function fetchConfigs(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
     let res: Response;
@@ -27,21 +24,16 @@ export function fetchConfigs(apiConfig: ClashAPIConfig) {
       dispatch(openModal('apiConfig'));
       return;
     }
-
     if (!res.ok) {
       console.log('Error fetch configs', res.statusText);
       dispatch(openModal('apiConfig'));
       return;
     }
-
     const payload = await res.json();
-
     dispatch('store/configs#fetchConfigs', (s) => {
       s.configs.configs = payload;
     });
-
     const haveFetchedConfig = getHaveFetched(getState());
-
     if (haveFetchedConfig) {
       // normally user will land on the "traffic chart" page first
       // calling this here will let the data start streaming
@@ -52,7 +44,6 @@ export function fetchConfigs(apiConfig: ClashAPIConfig) {
     }
   };
 }
-
 function markHaveFetchedConfig() {
   return (dispatch: DispatchFn) => {
     dispatch('store/configs#markHaveFetchedConfig', (s: State) => {
@@ -60,9 +51,7 @@ function markHaveFetchedConfig() {
     });
   };
 }
-
 type generalConfig = Omit<ClashGeneralConfig, 'tun'>;
-
 export function updateConfigs(
   apiConfig: ClashAPIConfig,
   partialConfg: TunPartial<ClashGeneralConfig>
@@ -86,13 +75,11 @@ export function updateConfigs(
       .then(() => {
         dispatch(fetchConfigs(apiConfig));
       });
-
     dispatch('storeConfigsOptimisticUpdateConfigs', (s) => {
       s.configs.configs = { ...s.configs.configs, ...partialConfg } as generalConfig;
     });
   };
 }
-
 export function reloadConfigFile(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -115,7 +102,6 @@ export function reloadConfigFile(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export function restartCore(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -138,7 +124,6 @@ export function restartCore(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export function upgradeCore(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -161,7 +146,6 @@ export function upgradeCore(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export function upgradeGeo(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -184,7 +168,6 @@ export function upgradeGeo(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export function upgradeUI(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -207,7 +190,6 @@ export function upgradeUI(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export function flushFakeIPPool(apiConfig: ClashAPIConfig) {
   return async (dispatch: DispatchFn) => {
     configsAPI
@@ -230,7 +212,6 @@ export function flushFakeIPPool(apiConfig: ClashAPIConfig) {
       });
   };
 }
-
 export const initialState: StateConfigs = {
   configs: {
     port: 7890,

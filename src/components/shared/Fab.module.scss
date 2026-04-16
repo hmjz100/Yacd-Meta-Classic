@@ -2,14 +2,12 @@
   position: relative;
   border-radius: 50%;
   background: linear-gradient(60deg, #e66465, #9198e5);
-
   width: 48px;
   height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .spining:before {
   content: '';
   position: absolute;
@@ -22,7 +20,6 @@
   border-radius: 50%;
   animation: spining_keyframes 1s linear infinite;
 }
-
 @keyframes spining_keyframes {
   0% {
     transform: rotate(0);

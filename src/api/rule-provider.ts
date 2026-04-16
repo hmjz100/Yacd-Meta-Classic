@@ -1,8 +1,6 @@
 import { getURLAndInit } from '~/misc/request-helper';
 import { ClashAPIConfig } from '~/types';
-
 export type RuleProvider = RuleProviderAPIItem & { idx: number };
-
 export type RuleProviderAPIItem = {
   behavior: string;
   name: string;
@@ -12,28 +10,22 @@ export type RuleProviderAPIItem = {
   updatedAt: string;
   vehicleType: 'HTTP' | 'File';
 };
-
 type RuleProviderAPIData = {
   providers: Record<string, RuleProviderAPIItem>;
 };
-
 function normalizeAPIResponse(data: RuleProviderAPIData) {
   const providers = data.providers;
   const names = Object.keys(providers);
   const byName: Record<string, RuleProvider> = {};
-
   // attach an idx to each item
   for (let i = 0; i < names.length; i++) {
     const name = names[i];
     byName[name] = { ...providers[name], idx: i };
   }
-
   return { byName, names };
 }
-
 export async function fetchRuleProviders(endpoint: string, apiConfig: ClashAPIConfig) {
   const { url, init } = getURLAndInit(apiConfig);
-
   let data = { providers: {} };
   try {
     const res = await fetch(url + endpoint, init);
@@ -47,7 +39,6 @@ export async function fetchRuleProviders(endpoint: string, apiConfig: ClashAPICo
   }
   return normalizeAPIResponse(data);
 }
-
 export async function refreshRuleProviderByName({
   name,
   apiConfig,
@@ -69,7 +60,6 @@ export async function refreshRuleProviderByName({
     return false;
   }
 }
-
 export async function updateRuleProviders({
   names,
   apiConfig,

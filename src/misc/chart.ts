@@ -4,102 +4,25 @@ import prettyBytes from './pretty-bytes';
 export const chartJSResource = createAsset(() => {
   return import('~/misc/chart-lib');
 });
-
-export const commonDataSetProps = {
-  borderWidth: 1.5,
-  pointRadius: 0,
-  tension: 0.4,
-  fill: true,
-  pointHitRadius: 10,
-  pointHoverRadius: 4,
-};
-
-export const commonChartOptions: any = {
+export const commonDataSetProps = { borderWidth: 1, pointRadius: 0, tension: 0.2, fill: true };
+export const commonChartOptions: import('chart.js').ChartOptions<'line'> = {
   responsive: true,
-  maintainAspectRatio: false,
-  parsing: false,
-  animation: {
-    duration: 1000,
-    easing: 'linear',
-  },
-  animations: {
-    y: {
-      duration: 0,
-    },
-    x: {
-      duration: 0,
-    },
-  },
-  transitions: {
-    active: {
-      animation: {
-        duration: 0,
-      },
-    },
-  },
-  elements: {
-    line: {
-      tension: 0.4,
-    },
-  },
-  interaction: {
-    mode: 'index',
-    intersect: false,
-  },
+  maintainAspectRatio: true,
   plugins: {
-    legend: {
-      display: true,
-      position: 'top',
-      align: 'end',
-      labels: {
-        boxWidth: 12,
-        usePointStyle: true,
-        pointStyle: 'circle',
-        padding: 15,
-      },
-    },
-    tooltip: {
-      enabled: true,
-      mode: 'index',
-      intersect: false,
-      padding: 10,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      titleColor: '#fff',
-      bodyColor: '#fff',
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-      borderWidth: 1,
-      callbacks: {
-        label(context) {
-          let label = context.dataset.label || '';
-          if (label) {
-            label += ': ';
-          }
-          if (context.parsed.y !== null) {
-            label += prettyBytes(context.parsed.y) + '/s';
-          }
-          return label;
-        },
-      },
-    },
+    legend: { labels: { boxWidth: 20 } },
   },
   scales: {
-    x: {
-      type: 'time',
-      display: false,
-    },
+    x: { display: false, type: 'category' },
     y: {
       type: 'linear',
       display: true,
-      beginAtZero: true,
-      grace: '5%',
       grid: {
         display: true,
-        color: 'rgba(128, 128, 128, 0.1)',
+        color: '#555',
         drawTicks: false,
       },
       border: {
-        display: false,
-        dash: [5, 5],
+        dash: [3, 6],
       },
       ticks: {
         maxTicksLimit: 5,
@@ -110,8 +33,19 @@ export const commonChartOptions: any = {
     },
   },
 };
-
 export const chartStyles = [
+  // [0] 默认：极光紫 (Aurora Purple)
+  {
+    up: {
+      backgroundColor: 'rgba(87, 74, 184, 0.5)',
+      borderColor: 'rgb(87, 74, 184)',
+    },
+    down: {
+      backgroundColor: 'rgba(116, 77, 175, 0.5)',
+      borderColor: 'rgb(116, 77, 175)',
+    },
+  },
+  // [1] 经典：樱花海蓝 (Sakura & Ocean)
   {
     down: {
       backgroundColor: 'rgba(81, 168, 221, 0.5)',
@@ -121,11 +55,8 @@ export const chartStyles = [
       backgroundColor: 'rgba(219, 77, 109, 0.5)',
       borderColor: 'rgb(219, 77, 109)',
     },
-    inuse: {
-      backgroundColor: 'rgba(81, 168, 221, 0.5)',
-      borderColor: 'rgb(81, 168, 221)',
-    },
   },
+  // [2] 赛博：霓虹幻境 (Neon Illusion)
   {
     up: {
       backgroundColor: 'rgba(245,78,162,0.6)',
@@ -135,11 +66,8 @@ export const chartStyles = [
       backgroundColor: 'rgba(123,59,140,0.6)',
       borderColor: 'rgba(66,33,142,1)',
     },
-    inuse: {
-      backgroundColor: 'rgba(123,59,140,0.6)',
-      borderColor: 'rgba(66,33,142,1)',
-    },
   },
+  // [3] 清新：薄荷晴空 (Minty Sky)
   {
     up: {
       backgroundColor: 'rgba(94, 175, 223, 0.3)',
@@ -149,11 +77,8 @@ export const chartStyles = [
       backgroundColor: 'rgba(139, 227, 195, 0.3)',
       borderColor: 'rgb(139, 227, 195)',
     },
-    inuse: {
-      backgroundColor: 'rgba(139, 227, 195, 0.3)',
-      borderColor: 'rgb(139, 227, 195)',
-    },
   },
+  // [4] 商务：晨曦金影 (Sunrise Glow)
   {
     up: {
       backgroundColor: 'rgba(242, 174, 62, 0.3)',
@@ -163,9 +88,38 @@ export const chartStyles = [
       backgroundColor: 'rgba(69, 154, 248, 0.3)',
       borderColor: 'rgb(69, 154, 248)',
     },
-    inuse: {
-      backgroundColor: 'rgba(69, 154, 248, 0.3)',
-      borderColor: 'rgb(69, 154, 248)',
+  },
+  // [5] 自然：森之律动 (Forest Rhythm)
+  {
+    up: {
+      backgroundColor: 'rgba(46, 204, 113, 0.4)',
+      borderColor: 'rgb(46, 204, 113)',
+    },
+    down: {
+      backgroundColor: 'rgba(241, 196, 15, 0.4)',
+      borderColor: 'rgb(241, 196, 15)',
+    },
+  },
+  // [6] 冷峻：冰川暗涌 (Glacier Undercurrent)
+  {
+    up: {
+      backgroundColor: 'rgba(26, 188, 156, 0.4)',
+      borderColor: 'rgb(26, 188, 156)',
+    },
+    down: {
+      backgroundColor: 'rgba(44, 62, 80, 0.4)',
+      borderColor: 'rgb(44, 62, 80)',
+    },
+  },
+  // [7] 工业：落日余晖 (Sunset Ember)
+  {
+    up: {
+      backgroundColor: 'rgba(230, 126, 34, 0.5)',
+      borderColor: 'rgb(230, 126, 34)',
+    },
+    down: {
+      backgroundColor: 'rgba(149, 165, 166, 0.5)',
+      borderColor: 'rgb(149, 165, 166)',
     },
   },
 ];

@@ -1,34 +1,25 @@
 import { ClashAPIConfig } from '~/types';
 
 import { buildWebSocketURL, getURLAndInit } from '../misc/request-helper';
-
 const endpoint = '/traffic';
 const textDecoder = new TextDecoder('utf-8');
-
 const Size = 150;
-
 const traffic = {
-  labels: Array(Size)
-    .fill(0)
-    .map((_, i) => Date.now() - (Size - i) * 1000),
-  up: Array(Size).fill(null),
-  down: Array(Size).fill(null),
-
+  labels: Array(Size).fill(0),
+  up: Array(Size),
+  down: Array(Size),
   size: Size,
   subscribers: [],
   appendData(o: { up: number; down: number }) {
     this.up.shift();
     this.down.shift();
     this.labels.shift();
-
     const l = Date.now();
     this.up.push(o.up);
     this.down.push(o.down);
     this.labels.push(l);
-
     this.subscribers.forEach((f) => f(o));
   },
-
   subscribe(listener: (x: any) => void) {
     this.subscribers.push(listener);
     return () => {
@@ -37,31 +28,23 @@ const traffic = {
     };
   },
 };
-
 let fetched = false;
 let decoded = '';
-
 function parseAndAppend(x: string) {
   traffic.appendData(JSON.parse(x));
 }
-
 function pump(reader: ReadableStreamDefaultReader) {
   return reader.read().then(({ done, value }) => {
     const str = textDecoder.decode(value, { stream: !done });
     decoded += str;
-
     const splits = decoded.split('\n');
-
     const lastSplit = splits[splits.length - 1];
-
     for (let i = 0; i < splits.length - 1; i++) {
       parseAndAppend(splits[i]);
     }
-
     if (done) {
       parseAndAppend(lastSplit);
       decoded = '';
-
       // eslint-disable-next-line no-console
       console.log('GET /traffic streaming done');
       fetched = false;
@@ -72,7 +55,6 @@ function pump(reader: ReadableStreamDefaultReader) {
     return pump(reader);
   });
 }
-
 // 1 OPEN
 // other value CLOSED
 // similar to ws readyState but not the same
@@ -95,7 +77,6 @@ function fetchData(apiConfig: ClashAPIConfig) {
   });
   return traffic;
 }
-
 function fetchDataWithFetch(apiConfig: ClashAPIConfig) {
   if (fetched) return traffic;
   fetched = true;
@@ -117,5 +98,4 @@ function fetchDataWithFetch(apiConfig: ClashAPIConfig) {
   );
   return traffic;
 }
-
 export { fetchData };

@@ -2,38 +2,50 @@ import * as React from 'react';
 
 import { ThemeSwitcher } from '~/components/shared/ThemeSwitcher';
 import { DOES_NOT_SUPPORT_FETCH, errors } from '~/misc/errors';
+import { getClashAPIConfig } from '~/store/app';
+import { fetchConfigs } from '~/store/configs';
+import { closeModal } from '~/store/modals';
+import { State } from '~/store/types';
 
+import APIConfig from './APIConfig';
 import s0 from './APIDiscovery.module.scss';
 import Modal from './Modal';
-
-type Props = {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  children: React.ReactNode;
-};
-
-export default function APIDiscovery({ isOpen, onRequestClose, children }: Props) {
+import { connect } from './StateProvider';
+const { useCallback, useEffect } = React;
+function APIDiscovery({ dispatch, apiConfig, modals }) {
   if (!window.fetch) {
     const { detail } = errors[DOES_NOT_SUPPORT_FETCH];
-    const err = new Error(detail) as Error & { code?: number };
+    const err = new Error(detail);
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     err.code = DOES_NOT_SUPPORT_FETCH;
     throw err;
   }
-
+  const closeApiConfigModal = useCallback(() => {
+    dispatch(closeModal('apiConfig'));
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchConfigs(apiConfig));
+  }, [dispatch, apiConfig]);
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={modals.apiConfig}
       className={s0.content}
       overlayClassName={s0.overlay}
       shouldCloseOnOverlayClick={false}
       shouldCloseOnEsc={false}
-      onRequestClose={onRequestClose}
+      onRequestClose={closeApiConfigModal}
     >
-      <div className={s0.container}>{children}</div>
-
+      <div className={s0.container}>
+        <APIConfig />
+      </div>
       <div className={s0.fixed}>
         <ThemeSwitcher />
       </div>
     </Modal>
   );
 }
+const mapState = (s: State) => ({
+  modals: s.modals,
+  apiConfig: getClashAPIConfig(s),
+});
+export default connect(mapState)(APIDiscovery);

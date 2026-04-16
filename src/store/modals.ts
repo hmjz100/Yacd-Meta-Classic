@@ -1,5 +1,4 @@
 import { DispatchFn } from './types';
-
 export function openModal(modalName: string) {
   return (dispatch: DispatchFn) => {
     dispatch(`openModal:${modalName}`, (s) => {
@@ -7,7 +6,6 @@ export function openModal(modalName: string) {
     });
   };
 }
-
 export function closeModal(modalName: string) {
   return (dispatch: DispatchFn) => {
     dispatch(`closeModal:${modalName}`, (s) => {
@@ -15,5 +13,4 @@ export function closeModal(modalName: string) {
     });
   };
 }
-
 export const initialState = { apiConfig: false };

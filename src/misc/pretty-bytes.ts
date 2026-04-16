@@ -1,7 +1,5 @@
 // steal from https://github.com/sindresorhus/pretty-bytes/blob/master/index.js
-
 const UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
 export default function prettyBytes(n: number) {
   if (n < 1000) {
     return n + ' B';

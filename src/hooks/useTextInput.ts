@@ -1,9 +1,7 @@
 import debounce from 'lodash-es/debounce';
 import * as React from 'react';
 import { RecoilState, useRecoilState } from 'recoil';
-
 const { useCallback, useState, useMemo } = React;
-
 export function useTextInut(
   x: RecoilState<string>
 ): [(e: React.ChangeEvent<HTMLInputElement>) => void, string] {

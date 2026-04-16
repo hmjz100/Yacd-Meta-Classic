@@ -2,10 +2,8 @@ import { DispatchFn, GetStateFn, State, StateApp } from '~/store/types';
 
 import { loadState, saveState } from '../misc/storage';
 import { debounce, trimTrailingSlash } from '../misc/utils';
-
 import { fetchConfigs } from './configs';
 import { closeModal } from './modals';
-
 export const getClashAPIConfig = (s: State) => {
   const idx = s.app.selectedClashAPIConfigIndex;
   return s.app.clashAPIConfigs[idx];
@@ -20,10 +18,7 @@ export const getProxySortBy = (s: State) => s.app.proxySortBy;
 export const getHideUnavailableProxies = (s: State) => s.app.hideUnavailableProxies;
 export const getAutoCloseOldConns = (s: State) => s.app.autoCloseOldConns;
 export const getLogStreamingPaused = (s: State) => s.app.logStreamingPaused;
-export const getProxiesLayout = (s: State) => s.app.proxiesLayout;
-
 const saveStateDebounced = debounce(saveState, 600);
-
 function findClashAPIConfigIndex(getState: GetStateFn, { baseURL, secret }) {
   const arr = getClashAPIConfigs(getState());
   for (let i = 0; i < arr.length; i++) {
@@ -31,13 +26,11 @@ function findClashAPIConfigIndex(getState: GetStateFn, { baseURL, secret }) {
     if (x.baseURL === baseURL && x.secret === secret) return i;
   }
 }
-
 export function addClashAPIConfig({ baseURL, secret }) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
     const idx = findClashAPIConfigIndex(getState, { baseURL, secret });
     // already exists
     if (idx) return;
-
     const clashAPIConfig = { baseURL, secret, addedAt: Date.now() };
     dispatch('addClashAPIConfig', (s) => {
       s.app.clashAPIConfigs.push(clashAPIConfig);
@@ -46,7 +39,6 @@ export function addClashAPIConfig({ baseURL, secret }) {
     saveState(getState().app);
   };
 }
-
 export function removeClashAPIConfig({ baseURL, secret }) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
     const idx = findClashAPIConfigIndex(getState, { baseURL, secret });
@@ -57,7 +49,6 @@ export function removeClashAPIConfig({ baseURL, secret }) {
     saveState(getState().app);
   };
 }
-
 export function selectClashAPIConfig({ baseURL, secret }) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
     const idx = findClashAPIConfigIndex(getState, { baseURL, secret });
@@ -69,7 +60,6 @@ export function selectClashAPIConfig({ baseURL, secret }) {
     }
     // side effect
     saveState(getState().app);
-
     // manual clean up is too complex
     // we just reload the app
     try {
@@ -79,7 +69,6 @@ export function selectClashAPIConfig({ baseURL, secret }) {
     }
   };
 }
-
 // unused
 export function updateClashAPIConfig({ baseURL, secret }) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
@@ -93,10 +82,8 @@ export function updateClashAPIConfig({ baseURL, secret }) {
     dispatch(fetchConfigs(clashAPIConfig));
   };
 }
-
 const rootEl = document.querySelector('html');
 type ThemeType = 'dark' | 'light' | 'auto';
-
 function setTheme(theme: ThemeType = 'light') {
   if (theme === 'auto') {
     rootEl.setAttribute('data-theme', 'auto');
@@ -106,7 +93,6 @@ function setTheme(theme: ThemeType = 'light') {
     rootEl.setAttribute('data-theme', 'light');
   }
 }
-
 export function switchTheme(nextTheme = 'auto') {
   return (dispatch: DispatchFn, getState: GetStateFn) => {
     const currentTheme = getTheme(getState());
@@ -120,7 +106,6 @@ export function switchTheme(nextTheme = 'auto') {
     saveState(getState().app);
   };
 }
-
 export function selectChartStyleIndex(selectedChartStyleIndex: number | string) {
   return (dispatch: DispatchFn, getState: GetStateFn) => {
     dispatch('appSelectChartStyleIndex', (s) => {
@@ -130,7 +115,6 @@ export function selectChartStyleIndex(selectedChartStyleIndex: number | string) 
     saveState(getState().app);
   };
 }
-
 export function updateAppConfig(name: string, value: unknown) {
   return (dispatch: DispatchFn, getState: GetStateFn) => {
     dispatch('appUpdateAppConfig', (s) => {
@@ -140,7 +124,6 @@ export function updateAppConfig(name: string, value: unknown) {
     saveState(getState().app);
   };
 }
-
 export function updateCollapsibleIsOpen(prefix: string, name: string, v: boolean) {
   return (dispatch: DispatchFn, getState: GetStateFn) => {
     dispatch('updateCollapsibleIsOpen', (s: State) => {
@@ -150,7 +133,6 @@ export function updateCollapsibleIsOpen(prefix: string, name: string, v: boolean
     saveStateDebounced(getState().app);
   };
 }
-
 const defaultClashAPIConfig = {
   baseURL: document.getElementById('app')?.getAttribute('data-base-url') ?? 'http://127.0.0.1:9090',
   secret: '',
@@ -160,21 +142,17 @@ const defaultClashAPIConfig = {
 const defaultState: StateApp = {
   selectedClashAPIConfigIndex: 0,
   clashAPIConfigs: [defaultClashAPIConfig],
-
   latencyTestUrl: 'https://www.gstatic.com/generate_204',
   selectedChartStyleIndex: 0,
   theme: 'auto',
-
   // type { [string]: boolean }
   collapsibleIsOpen: {},
   // how proxies are sorted in a group or provider
   proxySortBy: 'Natural',
   hideUnavailableProxies: false,
-  autoCloseOldConns: true,
+  autoCloseOldConns: false,
   logStreamingPaused: false,
-  proxiesLayout: 'single',
 };
-
 function parseConfigQueryString() {
   const { search } = window.location;
   const collector: Record<string, string> = {};
@@ -186,12 +164,10 @@ function parseConfigQueryString() {
   }
   return collector;
 }
-
 export function initialState() {
   let s = loadState();
   s = { ...defaultState, ...s };
   const query = parseConfigQueryString();
-
   const conf = s.clashAPIConfigs[s.selectedClashAPIConfigIndex];
   if (conf) {
     const url = new URL(conf.baseURL);
@@ -212,7 +188,6 @@ export function initialState() {
       conf.secret = query.secret;
     }
   }
-
   if (query.theme === 'dark' || query.theme === 'light') {
     s.theme = query.theme;
   }

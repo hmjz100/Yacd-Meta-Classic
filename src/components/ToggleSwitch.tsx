@@ -1,17 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 
 import s0 from './ToggleSwitch.module.scss';
-
 type Props = {
   options?: any[];
   value?: string;
   name?: string;
   onChange?: (...args: any[]) => any;
 };
-
 function ToggleSwitch({ options, value, name, onChange }: Props) {
   const idxSelected = useMemo(() => options.map((o) => o.value).indexOf(value), [options, value]);
-
   const getPortionPercentage = useCallback(
     (idx: number) => {
       const w = Math.floor(100 / options.length);
@@ -23,14 +20,12 @@ function ToggleSwitch({ options, value, name, onChange }: Props) {
     },
     [options]
   );
-
   const sliderStyle = useMemo(() => {
     return {
       width: getPortionPercentage(idxSelected) + '%',
       left: idxSelected * getPortionPercentage(0) + '%',
     };
   }, [idxSelected, getPortionPercentage]);
-
   return (
     <div className={s0.ToggleSwitch}>
       <div className={s0.slider} style={sliderStyle} />
@@ -61,5 +56,4 @@ function ToggleSwitch({ options, value, name, onChange }: Props) {
     </div>
   );
 }
-
 export default React.memo(ToggleSwitch);

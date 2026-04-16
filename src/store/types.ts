@@ -1,22 +1,17 @@
 import type { ClashAPIConfig } from '~/types';
-
 export type ClashAPIConfigWithAddedAt = ClashAPIConfig & { addedAt?: number };
 export type StateApp = {
   selectedClashAPIConfigIndex: number;
   clashAPIConfigs: ClashAPIConfigWithAddedAt[];
-
   latencyTestUrl: string;
   selectedChartStyleIndex: number;
   theme: string;
-
   collapsibleIsOpen: Record<string, boolean>;
   proxySortBy: string;
   hideUnavailableProxies: boolean;
   autoCloseOldConns: boolean;
   logStreamingPaused: boolean;
-  proxiesLayout: string;
 };
-
 export type ClashTunConfig = {
   enable: boolean;
   device?: string;
@@ -24,7 +19,6 @@ export type ClashTunConfig = {
   'dns-hijack': string[];
   'auto-route': boolean;
 };
-
 export type ClashGeneralConfig = {
   port: number;
   'socks-port': number;
@@ -40,16 +34,12 @@ export type ClashGeneralConfig = {
   sniffing?: boolean;
   tun?: ClashTunConfig;
 };
-
 export type TunPartial<T> = {
   [P in keyof T]?: T[P] extends ClashTunConfig ? TunPartial<T[P]> : T[P];
 };
-
 ///// store.proxies
-
 type LatencyHistory = Array<{ time: string; delay: number }>;
 type PrimitiveProxyType = 'Shadowsocks' | 'Snell' | 'Socks5' | 'Http' | 'Vmess';
-
 export type SubscriptionInfo = {
   Download?: number;
   Upload?: number;
@@ -66,14 +56,12 @@ export type ProxyItem = {
   providerName?: string;
   all?: string[];
   now?: string;
-  hidden?: boolean;
 };
 export type ProxiesMapping = Record<string, ProxyItem>;
 export type DelayMapping = Record<
   string,
   { number?: number; error?: string; testing?: boolean; updatedAt?: number }
 >;
-
 export type ProxyProvider = {
   name: string;
   type: 'Proxy';
@@ -82,11 +70,9 @@ export type ProxyProvider = {
   proxies: Array<ProxyItem>;
   subscriptionInfo?: SubscriptionInfo;
 };
-
 export type FormattedProxyProvider = Omit<ProxyProvider, 'proxies'> & {
   proxies: string[];
 };
-
 export type SwitchProxyCtxItem = { groupName: string; itemName: string };
 type SwitchProxyCtx = {
   to: SwitchProxyCtxItem;
@@ -97,13 +83,10 @@ export type StateProxies = {
   groupNames: string[];
   proxyProviders?: FormattedProxyProvider[];
   dangleProxyNames?: string[];
-
   showModalClosePrevConns: boolean;
   switchProxyCtx?: SwitchProxyCtx;
 };
-
 ///// store.logs
-
 export type Log = {
   time: string;
   even: boolean;
@@ -111,28 +94,21 @@ export type Log = {
   type: string;
   id: string;
 };
-
 export type StateLogs = {
   searchText: string;
   logs: Log[];
   tail: number;
 };
-
 ///// store.configs
-
 export type StateConfigs = {
   configs: ClashGeneralConfig;
   haveFetchedConfig: boolean;
 };
-
 ///// store.modals
-
 export type StateModals = {
   apiConfig: boolean;
 };
-
 //////
-
 export type State = {
   app: StateApp;
   configs: StateConfigs;
@@ -140,7 +116,6 @@ export type State = {
   logs: StateLogs;
   modals: StateModals;
 };
-
 export type GetStateFn = () => State;
 export interface DispatchFn {
   (msg: string, change: (s: State) => void): void;

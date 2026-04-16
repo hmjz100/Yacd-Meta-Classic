@@ -1,7 +1,5 @@
 // manage localStorage
-
 const StorageKey = 'yacd.metacubex.one';
-
 function loadState() {
   try {
     const serialized = localStorage.getItem(StorageKey);
@@ -11,7 +9,6 @@ function loadState() {
     return undefined;
   }
 }
-
 function saveState(state) {
   try {
     const serialized = JSON.stringify(state);
@@ -20,7 +17,6 @@ function saveState(state) {
     // ignore
   }
 }
-
 function clearState() {
   try {
     localStorage.removeItem(StorageKey);
@@ -28,5 +24,4 @@ function clearState() {
     // ignore
   }
 }
-
 export { loadState, saveState, clearState };

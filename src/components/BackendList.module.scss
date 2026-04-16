@@ -4,15 +4,13 @@
   padding: 0;
   list-style: none;
   line-height: 1.8;
-
   --width-max-content: 230px;
 }
-
 .li {
   position: relative;
   margin: 5px 0;
   padding: 10px 0;
-  border-radius: var(--border-radius);
+  border-radius: 10px;
   display: grid;
   place-content: center;
   grid-template-columns: 40px 1fr 40px;
@@ -21,18 +19,15 @@
   column-gap: 10px;
   border: 1px solid var(--bg-near-transparent);
 }
-
 .li:hover {
   background-color: var(--bg-near-transparent);
 }
-
 .close {
   opacity: 0;
   grid-area: close;
   place-self: center;
   cursor: pointer;
 }
-
 .li:hover .close,
 .li:hover .eye {
   opacity: 1;
@@ -41,14 +36,12 @@
 .eye:focus {
   opacity: 1;
 }
-
 .hasSecret {
   grid-template-rows: repeat(2, 30px);
   grid-template-areas:
     'close url .'
     'close secret eye';
 }
-
 .url {
   grid-area: url;
 }
@@ -61,14 +54,12 @@
   place-self: center;
   cursor: pointer;
 }
-
 .url,
 .secret {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .btn {
   outline: none;
   appearance: none;
@@ -93,7 +84,6 @@
 .btn:disabled {
   color: var(--color-text-secondary);
 }
-
 .url {
   cursor: pointer;
 }

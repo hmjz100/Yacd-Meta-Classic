@@ -1,34 +1,25 @@
 import { ClashAPIConfig } from '~/types';
 
 import { buildWebSocketURL, getURLAndInit } from '../misc/request-helper';
-
 const endpoint = '/memory';
 const textDecoder = new TextDecoder('utf-8');
-
 const Size = 150;
-
 const memory = {
-  labels: Array(Size)
-    .fill(0)
-    .map((_, i) => Date.now() - (Size - i) * 1000),
-  inuse: Array(Size).fill(null),
-  oslimit: Array(Size).fill(null),
-
+  labels: Array(Size).fill(0),
+  inuse: Array(Size),
+  oslimit: Array(Size),
   size: Size,
   subscribers: [],
   appendData(o: { inuse: number; oslimit: number }) {
     this.inuse.shift();
     this.oslimit.shift();
     this.labels.shift();
-
     const l = Date.now();
     this.inuse.push(o.inuse);
     this.oslimit.push(o.oslimit);
     this.labels.push(l);
-
     this.subscribers.forEach((f) => f(o));
   },
-
   subscribe(listener: (x: any) => void) {
     this.subscribers.push(listener);
     return () => {
@@ -37,31 +28,23 @@ const memory = {
     };
   },
 };
-
 let fetched = false;
 let decoded = '';
-
 function parseAndAppend(x: string) {
   memory.appendData(JSON.parse(x));
 }
-
 function pump(reader: ReadableStreamDefaultReader) {
   return reader.read().then(({ done, value }) => {
     const str = textDecoder.decode(value, { stream: !done });
     decoded += str;
-
     const splits = decoded.split('\n');
-
     const lastSplit = splits[splits.length - 1];
-
     for (let i = 0; i < splits.length - 1; i++) {
       parseAndAppend(splits[i]);
     }
-
     if (done) {
       parseAndAppend(lastSplit);
       decoded = '';
-
       // eslint-disable-next-line no-console
       console.log('GET /memory streaming done');
       fetched = false;
@@ -72,7 +55,6 @@ function pump(reader: ReadableStreamDefaultReader) {
     return pump(reader);
   });
 }
-
 // 1 OPEN
 // other value CLOSED
 // similar to ws readyState but not the same
@@ -95,7 +77,6 @@ function fetchData(apiConfig: ClashAPIConfig) {
   });
   return memory;
 }
-
 function fetchDataWithFetch(apiConfig: ClashAPIConfig) {
   if (fetched) return memory;
   fetched = true;
@@ -117,5 +98,4 @@ function fetchDataWithFetch(apiConfig: ClashAPIConfig) {
   );
   return memory;
 }
-
 export { fetchData };

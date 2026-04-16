@@ -1,11 +1,9 @@
 import React from 'react';
 
 import s from './Loading.module.scss';
-
 type Props = {
   height?: string;
 };
-
 const Loading = ({ height }: Props) => {
   const style = height ? { height } : {};
   return (
@@ -14,5 +12,4 @@ const Loading = ({ height }: Props) => {
     </div>
   );
 };
-
 export default Loading;

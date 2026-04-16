@@ -1,7 +1,5 @@
 import * as React from 'react';
-
 const { useState, useRef, useCallback, useLayoutEffect } = React;
-
 /**
  * cosnt [ref, remainingHeight] = useRemainingViewPortHeight();
  *
@@ -19,7 +17,6 @@ export default function useRemainingViewPortHeight<ElementType extends HTMLDivEl
     const { top } = ref.current.getBoundingClientRect();
     setContainerHeight(window.innerHeight - top);
   }, []);
-
   useLayoutEffect(() => {
     updateContainerHeight();
     window.addEventListener('resize', updateContainerHeight);
@@ -27,6 +24,5 @@ export default function useRemainingViewPortHeight<ElementType extends HTMLDivEl
       window.removeEventListener('resize', updateContainerHeight);
     };
   }, [updateContainerHeight]);
-
   return [ref, containerHeight];
 }

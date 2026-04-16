@@ -2,14 +2,12 @@ import cx from 'clsx';
 import React from 'react';
 
 import s from './Selection.module.scss';
-
 type SelectionProps = {
   OptionComponent?: (...args: any[]) => any;
   optionPropsList?: any[];
   selectedIndex?: number;
   onChange?: (...args: any[]) => any;
 };
-
 export function Selection2({
   OptionComponent,
   optionPropsList,

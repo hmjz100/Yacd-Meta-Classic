@@ -3,7 +3,6 @@ import * as React from 'react';
 import Modal, { Props as ReactModalProps } from 'react-modal';
 
 import s0 from './Modal.module.scss';
-
 type Props = ReactModalProps & {
   isOpen: boolean;
   onRequestClose: (...args: any[]) => any;
@@ -11,7 +10,6 @@ type Props = ReactModalProps & {
   className?: string;
   overlayClassName?: string;
 };
-
 function ModalAPIConfig({
   isOpen,
   onRequestClose,
@@ -34,5 +32,4 @@ function ModalAPIConfig({
     </Modal>
   );
 }
-
 export default React.memo(ModalAPIConfig);

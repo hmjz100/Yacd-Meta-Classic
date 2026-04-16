@@ -2,7 +2,6 @@ import React from 'react';
 
 import s0 from './Loading2.module.scss';
 import SvgYacd from './SvgYacd';
-
 function Loading() {
   return (
     <div className={s0.lo}>
@@ -10,5 +9,4 @@ function Loading() {
     </div>
   );
 }
-
 export default Loading;

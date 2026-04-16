@@ -1,18 +1,13 @@
 import { ClashAPIConfig } from '~/types';
 
 import { buildWebSocketURL, getURLAndInit } from '../misc/request-helper';
-
 const endpoint = '/connections';
-
 const fetched = false;
-
 interface Subscriber {
   listner: unknown; // on data received, listener will be called with data
   onClose: () => void; // on stream closed, onClose will be called
 }
-
 const subscribers = [];
-
 // see also https://github.com/Dreamacro/clash/blob/dev/constant/metadata.go#L41
 type UUID = string;
 type ConnNetwork = 'tcp' | 'udp';
@@ -46,7 +41,6 @@ type ConnectionsData = {
   uploadTotal: number;
   connections: Array<ConnectionItem>;
 };
-
 function appendData(s: string) {
   let o: ConnectionsData;
   try {
@@ -65,9 +59,7 @@ function appendData(s: string) {
   }
   subscribers.forEach((s) => s.listner(o));
 }
-
 type UnsubscribeFn = () => void;
-
 let wsState: number;
 export function fetchData(
   apiConfig: ClashAPIConfig,
@@ -101,7 +93,6 @@ export function fetchData(
       onClose,
     });
 }
-
 function subscribe(subscriber: Subscriber): UnsubscribeFn {
   subscribers.push(subscriber);
   return function unsubscribe() {
@@ -109,17 +100,14 @@ function subscribe(subscriber: Subscriber): UnsubscribeFn {
     subscribers.splice(idx, 1);
   };
 }
-
 export async function closeAllConnections(apiConfig: ClashAPIConfig) {
   const { url, init } = getURLAndInit(apiConfig);
   return await fetch(url + endpoint, { ...init, method: 'DELETE' });
 }
-
 export async function fetchConns(apiConfig: ClashAPIConfig) {
   const { url, init } = getURLAndInit(apiConfig);
   return await fetch(url + endpoint, { ...init });
 }
-
 export async function closeConnById(apiConfig: ClashAPIConfig, id: string) {
   const { url: baseURL, init } = getURLAndInit(apiConfig);
   const url = `${baseURL}${endpoint}/${id}`;

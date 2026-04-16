@@ -1,96 +1,82 @@
 import * as React from 'react';
-import { Activity, ArrowDown, ArrowUp, Cpu, Link as LinkIcon, Zap } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 
-import useMemory from '../hooks/useMemory';
-import useTraffic from '../hooks/useTraffic';
-import { useConnectionSummary } from '../modules/home/hooks';
-import { formatTrafficRate } from '../modules/home/utils';
-import { ClashAPIConfig } from '../types';
-
-import Sparkline from './Sparkline';
+import * as connAPI from '../api/connections';
+import { fetchData } from '../api/traffic';
+import prettyBytes from '../misc/pretty-bytes';
+import { getClashAPIConfig } from '../store/app';
+import { connect } from './StateProvider';
 import s0 from './TrafficNow.module.scss';
-
-type Props = {
-  apiConfig: ClashAPIConfig;
-  selectedChartStyleIndex: number;
-};
-
-export default function TrafficNow({ apiConfig, selectedChartStyleIndex }: Props) {
+const { useState, useEffect, useCallback } = React;
+const mapState = (s) => ({
+  apiConfig: getClashAPIConfig(s),
+});
+export default connect(mapState)(TrafficNow);
+function TrafficNow({ apiConfig }) {
   const { t } = useTranslation();
-  const traffic = useTraffic(apiConfig);
-  const memory = useMemory(apiConfig);
-  const { upTotal, dlTotal, connNumber, mUsage } = useConnectionSummary(apiConfig);
-
-  const upStr = formatTrafficRate(traffic.up[traffic.up.length - 1] || 0);
-  const downStr = formatTrafficRate(traffic.down[traffic.down.length - 1] || 0);
-
+  const { upStr, downStr } = useSpeed(apiConfig);
+  const { upTotal, dlTotal, connNumber, mUsage } = useConnection(apiConfig);
   return (
     <div className={s0.TrafficNow}>
       <div className={s0.sec}>
-        <div className={s0.header}>
-          <Cpu size={16} />
-          <span>{t('Memory Usage')}</span>
-        </div>
-        <div className={s0.value}>{mUsage}</div>
-        <Sparkline
-          data={memory.inuse}
-          labels={memory.labels}
-          type="inuse"
-          styleIndex={selectedChartStyleIndex}
-        />
-      </div>
-
-      <div className={s0.sec}>
-        <div className={s0.header}>
-          <ArrowDown size={16} />
-          <span>{t('Download')}</span>
-        </div>
-        <div className={s0.value}>{downStr}</div>
-        <Sparkline
-          data={traffic.down}
-          labels={traffic.labels}
-          type="down"
-          styleIndex={selectedChartStyleIndex}
-        />
+        <div>{t('Upload')}</div>
+        <div>{upStr}</div>
       </div>
       <div className={s0.sec}>
-        <div className={s0.header}>
-          <ArrowUp size={16} />
-          <span>{t('Upload')}</span>
-        </div>
-        <div className={s0.value}>{upStr}</div>
-        <Sparkline
-          data={traffic.up}
-          labels={traffic.labels}
-          type="up"
-          styleIndex={selectedChartStyleIndex}
-        />
+        <div>{t('Download')}</div>
+        <div>{downStr}</div>
       </div>
-
       <div className={s0.sec}>
-        <div className={s0.header}>
-          <Activity size={16} />
-          <span>{t('Download Total')}</span>
-        </div>
-        <div className={s0.value}>{dlTotal}</div>
+        <div>{t('Upload Total')}</div>
+        <div>{upTotal}</div>
       </div>
-
       <div className={s0.sec}>
-        <div className={s0.header}>
-          <Zap size={16} />
-          <span>{t('Upload Total')}</span>
-        </div>
-        <div className={s0.value}>{upTotal}</div>
+        <div>{t('Download Total')}</div>
+        <div>{dlTotal}</div>
       </div>
-
       <div className={s0.sec}>
-        <div className={s0.header}>
-          <LinkIcon size={16} />
-          <span>{t('Active Connections')}</span>
-        </div>
-        <div className={s0.value}>{connNumber}</div>
+        <div>{t('Active Connections')}</div>
+        <div>{connNumber}</div>
+      </div>
+      <div className={s0.sec}>
+        <div>{t('Memory Usage')}</div>
+        <div>{mUsage}</div>
       </div>
     </div>
   );
+}
+function useSpeed(apiConfig) {
+  const [speed, setSpeed] = useState({ upStr: '0 B/s', downStr: '0 B/s' });
+  useEffect(() => {
+    return fetchData(apiConfig).subscribe((o) =>
+      setSpeed({
+        upStr: prettyBytes(o.up) + '/s',
+        downStr: prettyBytes(o.down) + '/s',
+      })
+    );
+  }, [apiConfig]);
+  return speed;
+}
+function useConnection(apiConfig) {
+  const [state, setState] = useState({
+    upTotal: '0 B',
+    dlTotal: '0 B',
+    connNumber: 0,
+    mUsage: '0 B',
+  });
+  const read = useCallback(
+    ({ downloadTotal, uploadTotal, connections, memory }) => {
+      setState({
+        upTotal: prettyBytes(uploadTotal),
+        dlTotal: prettyBytes(downloadTotal),
+        connNumber: connections ? connections.length : 0,
+        mUsage: prettyBytes(memory),
+      });
+    },
+    [setState]
+  );
+  useEffect(() => {
+    return connAPI.fetchData(apiConfig, read);
+  }, [apiConfig, read]);
+  return state;
 }

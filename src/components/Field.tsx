@@ -1,9 +1,7 @@
 import * as React from 'react';
 
 import s from './Field.module.scss';
-
 const { useCallback } = React;
-
 type Props = {
   name: string;
   value?: string | number;
@@ -13,7 +11,6 @@ type Props = {
   label?: string;
   placeholder?: string;
 };
-
 export default function Field({ id, label, value, onChange, ...props }: Props) {
   const valueOnChange = useCallback((e) => onChange(e), [onChange]);
   return (

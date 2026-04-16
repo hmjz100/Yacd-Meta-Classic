@@ -1,6 +1,5 @@
 # for netlify hosting
 # https://docs.netlify.com/routing/headers/#syntax-for-the-headers-file
-
 /*
   X-Frame-Options: DENY
   X-XSS-Protection: 1; mode=block

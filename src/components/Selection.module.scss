@@ -6,18 +6,15 @@
   flex-wrap: wrap;
   flex-direction: row;
 }
-
 .input + .cnt {
   border: 1px solid transparent;
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 5px;
 }
-
 .input:focus + .cnt {
   border-color: var(--color-focus-blue);
 }
-
 .input:checked + .cnt {
   border-color: var(--color-focus-blue);
 }

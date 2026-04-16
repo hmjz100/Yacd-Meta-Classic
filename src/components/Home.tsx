@@ -1,22 +1,27 @@
-import React from 'react';
-
-import { ClashAPIConfig } from '~/types';
+import React, { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ContentHeader from './ContentHeader';
 import s0 from './Home.module.scss';
+import Loading from './Loading';
+import MemoryChart from './MemoryChart';
+import TrafficChart from './TrafficChart';
 import TrafficNow from './TrafficNow';
-
-type Props = {
-  apiConfig: ClashAPIConfig;
-  selectedChartStyleIndex: number;
-};
-
-export default function Home({ apiConfig, selectedChartStyleIndex }: Props) {
+export default function Home() {
+  const { t } = useTranslation();
   return (
     <div>
-      <ContentHeader />
+      <ContentHeader title={t('Overview')} />
       <div className={s0.root}>
-        <TrafficNow apiConfig={apiConfig} selectedChartStyleIndex={selectedChartStyleIndex} />
+        <div>
+          <TrafficNow />
+        </div>
+        <div className={s0.chart}>
+          <Suspense fallback={<Loading height="200px" />}>
+            <TrafficChart />
+            <MemoryChart />
+          </Suspense>
+        </div>
       </div>
     </div>
   );

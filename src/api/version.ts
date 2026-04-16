@@ -1,12 +1,10 @@
 import { getURLAndInit } from '~/misc/request-helper';
 import { ClashAPIConfig } from '~/types';
-
 type VersionData = {
   version?: string;
   premium?: boolean;
   meta?: boolean;
 };
-
 export async function fetchVersion(
   endpoint: string,
   apiConfig: ClashAPIConfig

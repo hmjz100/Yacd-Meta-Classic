@@ -10,12 +10,10 @@
   align-items: center;
   justify-content: center;
 }
-
 .content {
   outline: none;
   color: var(--color-text);
-  background: var(--bg-modal);
+  background: #444;
   padding: 20px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-card);
+  border-radius: 10px;
 }

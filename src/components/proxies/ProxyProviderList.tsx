@@ -1,52 +1,28 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
+import ContentHeader from '~/components/ContentHeader';
 import { ProxyProvider } from '~/components/proxies/ProxyProvider';
-import { DelayMapping, DispatchFn, FormattedProxyProvider, ProxiesMapping } from '~/store/types';
-import { ClashAPIConfig } from '~/types';
-
-export function ProxyProviderList({
-  items,
-  delay,
-  proxies,
-  latencyTestUrl,
-  hideUnavailableProxies,
-  proxySortBy,
-  dispatch,
-  apiConfig,
-  collapsibleIsOpen,
-}: {
-  items: FormattedProxyProvider[];
-  delay: DelayMapping;
-  proxies: ProxiesMapping;
-  latencyTestUrl: string;
-  hideUnavailableProxies: boolean;
-  proxySortBy: string;
-  dispatch: DispatchFn;
-  apiConfig: ClashAPIConfig;
-  collapsibleIsOpen: Record<string, boolean>;
-}) {
+import { FormattedProxyProvider } from '~/store/types';
+export function ProxyProviderList({ items }: { items: FormattedProxyProvider[] }) {
+  const { t } = useTranslation();
   if (items.length === 0) return null;
   return (
-    <div>
-      {items.map((item) => (
-        <ProxyProvider
-          key={item.name}
-          name={item.name}
-          proxies={item.proxies}
-          type={item.type}
-          vehicleType={item.vehicleType}
-          updatedAt={item.updatedAt}
-          subscriptionInfo={item.subscriptionInfo}
-          proxyMapping={proxies}
-          latencyTestUrl={latencyTestUrl}
-          delay={delay}
-          hideUnavailableProxies={hideUnavailableProxies}
-          proxySortBy={proxySortBy}
-          dispatch={dispatch}
-          apiConfig={apiConfig}
-          isOpen={Boolean(collapsibleIsOpen[`proxyProvider:${item.name}`])}
-        />
-      ))}
-    </div>
+    <>
+      <ContentHeader title={t('proxy_provider')} />
+      <div>
+        {items.map((item) => (
+          <ProxyProvider
+            key={item.name}
+            name={item.name}
+            proxies={item.proxies}
+            type={item.type}
+            vehicleType={item.vehicleType}
+            updatedAt={item.updatedAt}
+            subscriptionInfo={item.subscriptionInfo}
+          />
+        ))}
+      </div>
+    </>
   );
 }

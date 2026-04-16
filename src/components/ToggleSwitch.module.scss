@@ -7,17 +7,14 @@
   display: flex;
   position: relative;
   outline: none;
-
   &:focus {
     border-color: var(--color-focus-blue);
   }
-
   input {
     position: absolute;
     left: 0;
     opacity: 0;
   }
-
   label {
     z-index: 2;
     display: flex;
@@ -27,7 +24,6 @@
     cursor: pointer;
   }
 }
-
 .slider {
   z-index: 1;
   position: absolute;

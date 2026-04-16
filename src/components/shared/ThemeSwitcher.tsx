@@ -8,10 +8,8 @@ import { getTheme, switchTheme } from '~/store/app';
 import { State } from '~/store/types';
 
 import s from './ThemeSwitcher.module.scss';
-
 export function ThemeSwitcherImpl({ theme, dispatch }) {
   const { t } = useTranslation();
-
   const themeIcon = React.useMemo(() => {
     switch (theme) {
       case 'dark':
@@ -25,12 +23,10 @@ export function ThemeSwitcherImpl({ theme, dispatch }) {
         return <MoonA />;
     }
   }, [theme]);
-
   const onChange = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => dispatch(switchTheme(e.target.value)),
     [dispatch]
   );
-
   return (
     <Tooltip label={t('switch_theme')} aria-label={'switch theme'}>
       <div className={s.themeSwitchContainer}>
@@ -44,7 +40,6 @@ export function ThemeSwitcherImpl({ theme, dispatch }) {
     </Tooltip>
   );
 }
-
 function MoonA() {
   const module = framerMotionResouce.read();
   const motion = module.motion;
@@ -69,11 +64,9 @@ function MoonA() {
     </svg>
   );
 }
-
 function Sun() {
   const module = framerMotionResouce.read();
   const motion = module.motion;
-
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -100,11 +93,9 @@ function Sun() {
     </svg>
   );
 }
-
 function Auto() {
   const module = framerMotionResouce.read();
   const motion = module.motion;
-
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -133,6 +124,5 @@ function Auto() {
     </svg>
   );
 }
-
 const mapState = (s: State) => ({ theme: getTheme(s) });
 export const ThemeSwitcher = connect(mapState)(ThemeSwitcherImpl);

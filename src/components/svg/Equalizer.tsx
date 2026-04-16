@@ -1,10 +1,8 @@
 import * as React from 'react';
-
 type Props = {
   size?: number;
   color?: string;
 };
-
 export default function Equalizer({ color = 'currentColor', size = 24 }: Props) {
   return (
     <svg

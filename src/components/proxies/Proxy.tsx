@@ -3,16 +3,15 @@ import cx from 'clsx';
 import * as React from 'react';
 
 import { keyCodes } from '~/misc/keycode';
+import { getClashAPIConfig, getLatencyTestUrl } from '~/store/app';
 import { DispatchFn, ProxyItem } from '~/store/types';
 import { ClashAPIConfig } from '~/types';
 
-import { healthcheckProxy } from '../../store/proxies';
-
+import { getDelay, getProxies, healthcheckProxy } from '../../store/proxies';
+import { connect } from '../StateProvider';
 import s0 from './Proxy.module.scss';
 import { ProxyLatency } from './ProxyLatency';
-
-const { memo, useMemo } = React;
-
+const { useMemo } = React;
 const colorMap = {
   // green
   good: '#67c23a',
@@ -23,7 +22,6 @@ const colorMap = {
   // bad: '#F56C6C',
   na: '#909399',
 };
-
 function getLabelColor(
   {
     number,
@@ -47,7 +45,6 @@ function getLabelColor(
   }
   return colorMap.na;
 }
-
 function getProxyDotBackgroundColor(
   latency: {
     number?: number;
@@ -60,7 +57,6 @@ function getProxyDotBackgroundColor(
   // }
   return getLabelColor(latency, httpsTest);
 }
-
 type ProxyProps = {
   name: string;
   now?: boolean;
@@ -72,8 +68,7 @@ type ProxyProps = {
   apiConfig: ClashAPIConfig;
   dispatch: DispatchFn;
 };
-
-export const ProxySmall = memo(function ProxySmall({
+function ProxySmallImpl({
   now,
   name,
   proxy,
@@ -88,7 +83,6 @@ export const ProxySmall = memo(function ProxySmall({
     () => getProxyDotBackgroundColor({ number: latencyNumber }, httpsLatencyTest),
     [latencyNumber, httpsLatencyTest]
   );
-
   const title = useMemo(() => {
     let ret = name;
     if (latency && typeof latency.number === 'number') {
@@ -96,11 +90,9 @@ export const ProxySmall = memo(function ProxySmall({
     }
     return ret;
   }, [name, latency]);
-
   const doSelect = React.useCallback(() => {
     isSelectable && onClick && onClick(name);
   }, [name, onClick, isSelectable]);
-
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
       if (e.keyCode === keyCodes.Enter) {
@@ -109,7 +101,6 @@ export const ProxySmall = memo(function ProxySmall({
     },
     [doSelect]
   );
-
   return (
     <div
       title={title}
@@ -124,20 +115,17 @@ export const ProxySmall = memo(function ProxySmall({
       {now && <div className={s0.now} />}
     </div>
   );
-});
-
+}
 function formatProxyType(t: string) {
   if (t === 'Shadowsocks') return 'SS';
   return t;
 }
-
 const positionProxyNameTooltip = (triggerRect: { left: number; top: number }) => {
   return {
     left: triggerRect.left + window.scrollX - 5,
     top: triggerRect.top + window.scrollY - 38,
   };
 };
-
 function ProxyNameTooltip({ children, label, 'aria-label': ariaLabel }) {
   const [trigger, tooltip] = useTooltip();
   return (
@@ -152,8 +140,7 @@ function ProxyNameTooltip({ children, label, 'aria-label': ariaLabel }) {
     </>
   );
 }
-
-export const Proxy = memo(function Proxy({
+function ProxyImpl({
   now,
   name,
   proxy,
@@ -177,7 +164,6 @@ export const Proxy = memo(function Proxy({
     [hasLatencyNumber, latencyNumber, httpsLatencyTest]
   );
   const isTestingLatency = Boolean(latency?.testing);
-
   const doSelect = React.useCallback(() => {
     isSelectable && onClick && onClick(name);
   }, [name, onClick, isSelectable]);
@@ -218,12 +204,10 @@ export const Proxy = memo(function Proxy({
       [s0.selectable]: isSelectable,
     });
   }, [isSelectable, now, latency]);
-
   const runLatencyTest = React.useCallback(() => {
     if (isTestingLatency) return;
     dispatch(healthcheckProxy(apiConfig, name));
   }, [apiConfig, dispatch, isTestingLatency, name]);
-
   return (
     <div
       tabIndex={0}
@@ -236,20 +220,20 @@ export const Proxy = memo(function Proxy({
         <ProxyNameTooltip label={name} aria-label={`proxy name: ${name}`}>
           <span>{name}</span>
         </ProxyNameTooltip>
-        <span className={s0.udpType} style={{ paddingLeft: 4 }}>
+        <span className={s0.proxyType} style={{ paddingLeft: 4, opacity: 0.6, color: '#51A8DD' }}>
           {formatUdpType(proxy.udp, proxy.xudp)}
         </span>
       </div>
-
       <div className={s0.row}>
         <div className={s0.row}>
-          <span className={s0.proxyType} style={{ paddingRight: 4 }}>
+          <span
+            className={s0.proxyType}
+            style={{ paddingRight: 4, opacity: 0.6, color: '#F596AA' }}
+          >
             {formatProxyType(proxy.type)}
           </span>
-
           {formatTfo(proxy.tfo)}
         </div>
-
         <ProxyLatency
           number={hasLatencyNumber ? latencyNumber : undefined}
           color={color}
@@ -260,4 +244,18 @@ export const Proxy = memo(function Proxy({
       </div>
     </div>
   );
-});
+}
+const mapState = (s: any, { name }) => {
+  const proxies = getProxies(s);
+  const delay = getDelay(s);
+  const latencyTestUrl = getLatencyTestUrl(s);
+  const proxy = proxies[name] || { name, history: [] };
+  return {
+    proxy: proxy,
+    latency: delay[name],
+    httpsLatencyTest: latencyTestUrl.startsWith('https://'),
+    apiConfig: getClashAPIConfig(s),
+  };
+};
+export const Proxy = connect(mapState)(ProxyImpl);
+export const ProxySmall = connect(mapState)(ProxySmallImpl);
