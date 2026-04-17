@@ -1,4 +1,4 @@
-@import '~/styles/utils/custom-media';
+@use '../../styles/utils/custom-media';
 .root {
 	padding: 6px 15px;
 	@media (--breakpoint-not-small) {
@@ -11,6 +11,8 @@
 .link {
 	color: var(--color-text-secondary);
 	display: inline-flex;
+	gap: 5px;
+	text-decoration: none;
 }
 .link:hover {
 	color: var(--color-text-highlight);

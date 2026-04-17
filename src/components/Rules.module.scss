@@ -1,4 +1,4 @@
-@import '~/styles/utils/custom-media';
+@use '../styles/utils/custom-media.scss';
 .header {
 	display: grid;
 	grid-template-columns: 1fr minmax(auto, 290px);

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { QueryClientProvider } from 'react-query';
 import { HashRouter as Router, Route, RouteObject, Routes, useRoutes } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
 
 import APIConfig from '~/components//APIConfig';
 import { About } from '~/components/about/About';
@@ -47,23 +46,21 @@ function SideBarApp() {
 }
 const App = () => (
 	<ErrorBoundary>
-		<RecoilRoot>
-			<StateProvider initialState={initialState} actions={actions}>
-				<QueryClientProvider client={queryClient}>
-					<div className={styles.app}>
-						<Head />
-						<Suspense fallback={<Loading />}>
-							<Router>
-								<Routes>
-									<Route path="/backend" element={<APIConfig />} />
-									<Route path="*" element={<SideBarApp />} />
-								</Routes>
-							</Router>
-						</Suspense>
-					</div>
-				</QueryClientProvider>
-			</StateProvider>
-		</RecoilRoot>
+		<StateProvider initialState={initialState} actions={actions}>
+			<QueryClientProvider client={queryClient}>
+				<div className={styles.app}>
+					<Head />
+					<Suspense fallback={<Loading />}>
+						<Router>
+							<Routes>
+								<Route path="/backend" element={<APIConfig />} />
+								<Route path="*" element={<SideBarApp />} />
+							</Routes>
+						</Router>
+					</Suspense>
+				</div>
+			</QueryClientProvider>
+		</StateProvider>
 	</ErrorBoundary>
 );
 export default App;

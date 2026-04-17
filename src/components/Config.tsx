@@ -99,7 +99,7 @@ type ConfigImplProps = {
 };
 function getBackendContent(version: any): string {
 	if (version && version.meta && !version.premium) {
-		return 'Clash.Meta ';
+		return 'Clash Meta ';
 	} else if (version && version.meta && version.premium) {
 		return 'sing-box ';
 	} else {
@@ -229,6 +229,50 @@ function ConfigImpl({
 	return (
 		<div>
 			<ContentHeader title={t('Config')} />
+			<div className={s0.section}>
+				<div>
+					<div className={s0.label}>{t('chart_style')}</div>
+					<Selection2
+						OptionComponent={TrafficChartSample}
+						optionPropsList={propsList}
+						selectedIndex={selectedChartStyleIndex}
+						onChange={selectChartStyleIndex}
+					/>
+				</div>
+				<div>
+					<div className={s0.label}>
+						{t('current_backend')}
+						<p>{getBackendContent(version) + apiConfig?.baseURL}</p>
+						<Button
+							start={<LogOut size={16} />}
+							label={t('switch_backend')}
+							onClick={openAPIConfigModal}
+						/>
+					</div>
+				</div>
+				<div>
+					<div className={s0.label}>{t('latency_test_url')}</div>
+					<SelfControlledInput
+						name="latencyTestUrl"
+						type="text"
+						value={latencyTestUrl}
+						onBlur={handleInputOnBlur}
+					/>
+				</div>
+				<div>
+					<div className={s0.label}>{t('lang')}</div>
+					<div>
+						<Select
+							options={langOptions}
+							selected={i18n.language}
+							onChange={(e) => i18n.changeLanguage(e.target.value)}
+						/>
+					</div>
+				</div>
+			</div>
+			<div className={s0.sep}>
+				<div />
+			</div>
 			<div className={s0.root}>
 				{(version.meta && version.premium) ||
 					portFields.map((f) =>
@@ -303,11 +347,11 @@ function ConfigImpl({
 					</div>
 				)}
 			</div>
-			<div className={s0.sep}>
-				<div />
-			</div>
 			{version.meta && (
 				<>
+					<div className={s0.sep}>
+						<div />
+					</div>
 					{version.premium || (
 						<div>
 							<div className={s0.section}>
@@ -418,53 +462,8 @@ function ConfigImpl({
 							</div>
 						)}
 					</div>
-					<div className={s0.sep}>
-						<div />
-					</div>
 				</>
 			)}
-			<div className={s0.section}>
-				<div>
-					<div className={s0.label}>{t('latency_test_url')}</div>
-					<SelfControlledInput
-						name="latencyTestUrl"
-						type="text"
-						value={latencyTestUrl}
-						onBlur={handleInputOnBlur}
-					/>
-				</div>
-				<div>
-					<div className={s0.label}>{t('lang')}</div>
-					<div>
-						<Select
-							options={langOptions}
-							selected={i18n.language}
-							onChange={(e) => i18n.changeLanguage(e.target.value)}
-						/>
-					</div>
-				</div>
-				<div>
-					<div className={s0.label}>{t('chart_style')}</div>
-					<Selection2
-						OptionComponent={TrafficChartSample}
-						optionPropsList={propsList}
-						selectedIndex={selectedChartStyleIndex}
-						onChange={selectChartStyleIndex}
-					/>
-				</div>
-				<div>
-					<div className={s0.label}>
-						{t('current_backend')}
-						<p>{getBackendContent(version) + apiConfig?.baseURL}</p>
-					</div>
-					<div className={s0.label}>Action</div>
-					<Button
-						start={<LogOut size={16} />}
-						label={t('switch_backend')}
-						onClick={openAPIConfigModal}
-					/>
-				</div>
-			</div>
 		</div>
 	);
 }

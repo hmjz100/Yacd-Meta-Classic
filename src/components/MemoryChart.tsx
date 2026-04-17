@@ -15,7 +15,7 @@ import { getClashAPIConfig, getSelectedChartStyleIndex } from '../store/app';
 import s0 from './MemoryChart.module.scss';
 import { connect } from './StateProvider';
 const { useMemo } = React;
-const chartWrapperStyle = {
+const chartWrapperStyle: React.CSSProperties = {
 	// make chartjs chart responsive
 	justifySelf: 'center',
 	position: 'relative',
@@ -25,7 +25,6 @@ const chartWrapperStyle = {
 const canvasWrapperStyle = {
 	width: '100%',
 	height: '100%',
-	padding: '10px',
 	borderRadius: '10px',
 };
 const mapState = (s: State) => ({

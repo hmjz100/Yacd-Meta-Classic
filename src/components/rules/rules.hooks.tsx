@@ -1,6 +1,6 @@
+import { useAtomValue } from 'jotai';
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useRecoilState } from 'recoil';
 
 import {
 	fetchRuleProviders,
@@ -60,7 +60,7 @@ export function useRuleAndProvider(apiConfig: ClashAPIConfig) {
 		fetchRules('/rules', apiConfig),
 	);
 	const { data: provider } = useRuleProviderQuery(apiConfig);
-	const [filterText] = useRecoilState(ruleFilterText);
+	const filterText = useAtomValue(ruleFilterText);
 	if (filterText === '') {
 		return { rules, provider, isFetching };
 	} else {

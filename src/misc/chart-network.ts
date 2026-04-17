@@ -4,10 +4,10 @@ import prettyBytes from './pretty-bytes';
 export const chartJSResource = createAsset(() => {
 	return import('~/misc/chart-lib');
 });
-export const commonDataSetProps = { borderWidth: 1, pointRadius: 0, tension: 0.2, fill: true };
-export const commonChartOptions: import('chart.js').ChartOptions<'line'> = {
+export const networkDataSetProps = { borderWidth: 1, pointRadius: 0, tension: 0.2, fill: true };
+export const networkChartOptions: import('chart.js').ChartOptions<'line'> = {
 	responsive: true,
-	maintainAspectRatio: true,
+	maintainAspectRatio: false,
 	plugins: {
 		legend: { labels: { boxWidth: 20 } },
 	},
@@ -19,7 +19,7 @@ export const commonChartOptions: import('chart.js').ChartOptions<'line'> = {
 			grid: {
 				display: true,
 				color: '#555',
-				drawTicks: false,
+				drawTicks: true,
 			},
 			border: {
 				dash: [3, 6],
@@ -33,6 +33,7 @@ export const commonChartOptions: import('chart.js').ChartOptions<'line'> = {
 		},
 	},
 };
+
 export const chartStyles = [
 	// [0] 默认：极光紫 (Aurora Purple)
 	{
@@ -47,13 +48,13 @@ export const chartStyles = [
 	},
 	// [1] 经典：樱花海蓝 (Sakura & Ocean)
 	{
-		down: {
-			backgroundColor: 'rgba(81, 168, 221, 0.5)',
-			borderColor: 'rgb(81, 168, 221)',
-		},
 		up: {
 			backgroundColor: 'rgba(219, 77, 109, 0.5)',
 			borderColor: 'rgb(219, 77, 109)',
+		},
+		down: {
+			backgroundColor: 'rgba(81, 168, 221, 0.5)',
+			borderColor: 'rgb(81, 168, 221)',
 		},
 	},
 	// [2] 赛博：霓虹幻境 (Neon Illusion)

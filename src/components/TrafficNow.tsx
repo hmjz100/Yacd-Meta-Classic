@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Activity, ArrowDown, ArrowUp, Cpu } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 
 import * as connAPI from '../api/connections';
@@ -19,28 +20,46 @@ function TrafficNow({ apiConfig }) {
 	return (
 		<div className={s0.TrafficNow}>
 			<div className={s0.sec}>
-				<div>{t('Upload')}</div>
+				<div>
+					<Cpu size={16} />
+					<span>{t('Memory Usage')}</span>
+				</div>
+				<div>{mUsage}</div>
+			</div>
+			<div className={s0.sec}>
+				<div>
+					<ArrowUp size={16} />
+					<span>{t('Upload')}</span>
+				</div>
 				<div>{upStr}</div>
 			</div>
 			<div className={s0.sec}>
-				<div>{t('Download')}</div>
+				<div>
+					<ArrowDown size={16} />
+					<span>{t('Download')}</span>
+				</div>
 				<div>{downStr}</div>
 			</div>
 			<div className={s0.sec}>
-				<div>{t('Upload Total')}</div>
+				<div>
+					<ArrowUp size={16} />
+					<span>{t('Upload Total')}</span>
+				</div>
 				<div>{upTotal}</div>
 			</div>
 			<div className={s0.sec}>
-				<div>{t('Download Total')}</div>
+				<div>
+					<ArrowDown size={16} />
+					<span>{t('Download Total')}</span>
+				</div>
 				<div>{dlTotal}</div>
 			</div>
 			<div className={s0.sec}>
-				<div>{t('Active Connections')}</div>
+				<div>
+					<Activity size={16} />
+					<span>{t('Active Connections')}</span>
+				</div>
 				<div>{connNumber}</div>
-			</div>
-			<div className={s0.sec}>
-				<div>{t('Memory Usage')}</div>
-				<div>{mUsage}</div>
 			</div>
 		</div>
 	);

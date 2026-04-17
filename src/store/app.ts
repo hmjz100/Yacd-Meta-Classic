@@ -149,9 +149,9 @@ const defaultState: StateApp = {
 	// type { [string]: boolean }
 	collapsibleIsOpen: {},
 	// how proxies are sorted in a group or provider
-	proxySortBy: 'Natural',
-	hideUnavailableProxies: false,
-	autoCloseOldConns: false,
+	proxySortBy: 'LatencyAsc',
+	hideUnavailableProxies: true,
+	autoCloseOldConns: true,
 	logStreamingPaused: false,
 };
 function parseConfigQueryString() {

@@ -1,4 +1,4 @@
-@import '~/styles/utils/custom-media';
+@use '../../styles/utils/custom-media.scss';
 .list {
 	margin: 8px 0;
 	display: grid;

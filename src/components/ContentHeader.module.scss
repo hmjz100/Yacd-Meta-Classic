@@ -1,4 +1,4 @@
-@import '~/styles/utils/custom-media';
+@use '../styles/utils/custom-media.scss';
 .root {
 	height: 76px;
 	display: flex;

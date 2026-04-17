@@ -1,4 +1,5 @@
-import produce, * as immer from 'immer';
+import * as immer from 'immer';
+import { produce } from 'immer';
 import React from 'react';
 // in logs store we update logs in place
 // outside of immer produce

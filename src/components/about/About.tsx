@@ -11,12 +11,13 @@ import { ClashAPIConfig } from '~/types';
 import s from './About.module.scss';
 type Props = { apiConfig: ClashAPIConfig };
 function Version({ name, link, version }: { name: string; link: string; version: string }) {
+	const cleanVersion = version.replace(/^(version\s+|v)/i, '');
 	return (
 		<div className={s.root}>
 			<h2>{name}</h2>
 			<p>
 				<span>Version </span>
-				<span className={s.mono}>{version}</span>
+				<span className={s.mono}>{cleanVersion}</span>
 			</p>
 			<p>
 				<a className={s.link} href={link} target="_blank" rel="noopener noreferrer">
@@ -48,7 +49,7 @@ function AboutImpl(props: Props) {
 						version.meta && version.premium
 							? 'https://github.com/SagerNet/sing-box'
 							: version.meta
-							? 'https://github.com/MetaCubeX/Clash.Meta'
+							? 'https://github.com/MetaCubeX/Clash.Meta/tree/Meta'
 							: 'https://github.com/Dreamacro/clash'
 					}
 				/>

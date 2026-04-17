@@ -1,4 +1,4 @@
-@import '~/styles/utils/custom-media';
+@use '../styles/utils/custom-media.scss';
 .root {
 	padding: 6px 15px;
 	@media screen and (min-width: 30em) {

@@ -1,4 +1,4 @@
-import '~/styles/main.scss';
+import './styles/main.scss';
 import './misc/i18n';
 
 import React from 'react';

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { State } from '~/store/types';
 
 import { fetchData } from '../api/traffic';
-import useLineChart from '../hooks/useLineChart';
-import { chartJSResource, chartStyles, commonDataSetProps } from '../misc/chart';
+import useLineChartNetwork from '../hooks/useLineChart';
+import { chartJSResource, chartStyles, networkDataSetProps } from '../misc/chart-network';
 import { getClashAPIConfig, getSelectedChartStyleIndex } from '../store/app';
 import { connect } from './StateProvider';
 import s0 from './TrafficChart.module.scss';
@@ -20,7 +20,6 @@ const chartWrapperStyle: React.CSSProperties = {
 const canvasWrapperStyle = {
 	width: '100%',
 	height: '100%',
-	padding: '10px',
 	borderRadius: '10px',
 };
 const mapState = (s: State) => ({
@@ -37,13 +36,13 @@ function TrafficChart({ apiConfig, selectedChartStyleIndex }) {
 			labels: traffic.labels,
 			datasets: [
 				{
-					...commonDataSetProps,
+					...networkDataSetProps,
 					...chartStyles[selectedChartStyleIndex].up,
 					label: t('Up'),
 					data: traffic.up,
 				},
 				{
-					...commonDataSetProps,
+					...networkDataSetProps,
 					...chartStyles[selectedChartStyleIndex].down,
 					label: t('Down'),
 					data: traffic.down,
@@ -52,7 +51,7 @@ function TrafficChart({ apiConfig, selectedChartStyleIndex }) {
 		}),
 		[traffic, selectedChartStyleIndex, t],
 	);
-	useLineChart(ChartMod.Chart, 'trafficChart', data, traffic);
+	useLineChartNetwork(ChartMod.Chart, 'trafficChart', data, traffic);
 	return (
 		<div style={chartWrapperStyle}>
 			<canvas id="trafficChart" style={canvasWrapperStyle} className={s0.TrafficChart} />
