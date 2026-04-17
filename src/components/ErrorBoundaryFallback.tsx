@@ -5,24 +5,24 @@ import SvgGithub from './SvgGithub';
 import SvgYacd from './SvgYacd';
 const yacdRepoIssueUrl = 'https://github.com/hmjz100/Yacd-Meta-Classic';
 type Props = {
-  message?: string;
-  detail?: string;
+	message?: string;
+	detail?: string;
 };
 function ErrorBoundaryFallback({ message, detail }: Props) {
-  return (
-    <div className={s0.root}>
-      <div className={s0.yacd}>
-        <SvgYacd width={150} height={150} />
-      </div>
-      {message ? <h1>{message}</h1> : null}
-      {detail ? <p>{detail}</p> : null}
-      <p>
-        <a className={s0.link} href={yacdRepoIssueUrl}>
-          <SvgGithub width={16} height={16} />
-          hmjz100/Yacd-Meta-Classic
-        </a>
-      </p>
-    </div>
-  );
+	return (
+		<div className={s0.root}>
+			<div className={s0.yacd}>
+				<SvgYacd width={150} height={150} />
+			</div>
+			{message ? <h1>{message}</h1> : null}
+			{detail ? <p>{detail}</p> : null}
+			<p>
+				<a className={s0.link} href={yacdRepoIssueUrl}>
+					<SvgGithub width={16} height={16} />
+					hmjz100/Yacd-Meta-Classic
+				</a>
+			</p>
+		</div>
+	);
 }
 export default ErrorBoundaryFallback;

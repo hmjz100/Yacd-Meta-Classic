@@ -1,47 +1,47 @@
 @import '~/styles/utils/custom-media';
 .proxyLatency {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 50px;
-  padding: 4px 10px;
-  gap: 4px;
-  border-radius: 9999px;
-  border: 1px solid var(--color-proxy-border);
-  background: var(--bg-latency, #ffffff);
-  color: var(--color-text);
-  font-size: 0.75em;
-  user-select: none;
-  outline: none;
-  @media (--breakpoint-not-small) {
-    padding: 5px 12px;
-    font-size: 0.8em;
-  }
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 50px;
+	padding: 4px 10px;
+	gap: 4px;
+	border-radius: 9999px;
+	border: 1px solid var(--color-proxy-border);
+	background: var(--bg-latency, #ffffff);
+	color: var(--color-text);
+	font-size: 0.75em;
+	user-select: none;
+	outline: none;
+	@media (--breakpoint-not-small) {
+		padding: 5px 12px;
+		font-size: 0.8em;
+	}
 }
 .clickable {
-  cursor: pointer;
+	cursor: pointer;
 }
 .clickable:hover,
 .clickable:focus-visible {
-  opacity: 0.8;
-  /*border-color: var(--card-hover-border-lightness);*/
-  outline: 1px solid var(--card-hover-border-lightness);
-  outline-offset: 0px;
+	opacity: 0.8;
+	/*border-color: var(--card-hover-border-lightness);*/
+	outline: 1px solid var(--card-hover-border-lightness);
+	outline-offset: 0px;
 }
 .placeholder {
-  color: var(--color-text-secondary);
+	color: var(--color-text-secondary);
 }
 .testing {
-  animation: proxyLatencyPulse 1s ease-in-out infinite;
+	animation: proxyLatencyPulse 1s ease-in-out infinite;
 }
 @keyframes proxyLatencyPulse {
-  0% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.8;
-  }
+	0% {
+		opacity: 0.8;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.8;
+	}
 }

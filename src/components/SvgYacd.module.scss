@@ -1,13 +1,13 @@
 .path {
-  stroke-dasharray: 890;
-  stroke-dashoffset: 890;
-  animation: dash 3s ease-in-out forwards normal infinite;
+	stroke-dasharray: 890;
+	stroke-dashoffset: 890;
+	animation: dash 3s ease-in-out forwards normal infinite;
 }
 @keyframes dash {
-  from {
-    stroke-dashoffset: 890;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
+	from {
+		stroke-dashoffset: 890;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
 }

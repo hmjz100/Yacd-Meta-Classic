@@ -25,45 +25,45 @@ const Logs = lazy(() => import('~/components/Logs'));
 const Proxies = lazy(() => import('~/components/proxies/Proxies'));
 const Rules = lazy(() => import('~/components/Rules'));
 const routes = [
-  { path: '/', element: <Home /> },
-  { path: '/connections', element: <Connections /> },
-  { path: '/configs', element: <Config /> },
-  { path: '/logs', element: <Logs /> },
-  { path: '/proxies', element: <Proxies /> },
-  { path: '/rules', element: <Rules /> },
-  { path: '/about', element: <About /> },
-  process.env.NODE_ENV === 'development' ? { path: '/style', element: <StyleGuide /> } : false,
+	{ path: '/', element: <Home /> },
+	{ path: '/connections', element: <Connections /> },
+	{ path: '/configs', element: <Config /> },
+	{ path: '/logs', element: <Logs /> },
+	{ path: '/proxies', element: <Proxies /> },
+	{ path: '/rules', element: <Rules /> },
+	{ path: '/about', element: <About /> },
+	process.env.NODE_ENV === 'development' ? { path: '/style', element: <StyleGuide /> } : false,
 ].filter(Boolean) as RouteObject[];
 function SideBarApp() {
-  return (
-    <>
-      <APIDiscovery />
-      <SideBar />
-      <div className={styles.content}>
-        <Suspense fallback={<Loading2 />}>{useRoutes(routes)}</Suspense>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<APIDiscovery />
+			<SideBar />
+			<div className={styles.content}>
+				<Suspense fallback={<Loading2 />}>{useRoutes(routes)}</Suspense>
+			</div>
+		</>
+	);
 }
 const App = () => (
-  <ErrorBoundary>
-    <RecoilRoot>
-      <StateProvider initialState={initialState} actions={actions}>
-        <QueryClientProvider client={queryClient}>
-          <div className={styles.app}>
-            <Head />
-            <Suspense fallback={<Loading />}>
-              <Router>
-                <Routes>
-                  <Route path="/backend" element={<APIConfig />} />
-                  <Route path="*" element={<SideBarApp />} />
-                </Routes>
-              </Router>
-            </Suspense>
-          </div>
-        </QueryClientProvider>
-      </StateProvider>
-    </RecoilRoot>
-  </ErrorBoundary>
+	<ErrorBoundary>
+		<RecoilRoot>
+			<StateProvider initialState={initialState} actions={actions}>
+				<QueryClientProvider client={queryClient}>
+					<div className={styles.app}>
+						<Head />
+						<Suspense fallback={<Loading />}>
+							<Router>
+								<Routes>
+									<Route path="/backend" element={<APIConfig />} />
+									<Route path="*" element={<SideBarApp />} />
+								</Routes>
+							</Router>
+						</Suspense>
+					</div>
+				</QueryClientProvider>
+			</StateProvider>
+		</RecoilRoot>
+	</ErrorBoundary>
 );
 export default App;

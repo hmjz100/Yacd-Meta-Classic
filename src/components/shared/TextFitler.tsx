@@ -5,14 +5,14 @@ import { useTextInut } from '~/hooks/useTextInput';
 
 import s from './TextFitler.module.scss';
 export function TextFilter(props: { textAtom: RecoilState<string>; placeholder?: string }) {
-  const [onChange, text] = useTextInut(props.textAtom);
-  return (
-    <input
-      className={s.input}
-      type="text"
-      value={text}
-      onChange={onChange}
-      placeholder={props.placeholder}
-    />
-  );
+	const [onChange, text] = useTextInut(props.textAtom);
+	return (
+		<input
+			className={s.input}
+			type="text"
+			value={text}
+			onChange={onChange}
+			placeholder={props.placeholder}
+		/>
+	);
 }

@@ -1,4 +1,7 @@
 {
-  "*.{js,jsx,ts,tsx,md,html,css,less,scss,json,yml,yaml}": "prettier --write",
-  "*.{js,jsx,ts,tsx}": "eslint --fix"
+	"*.{js,jsx,ts,tsx,md,html,css,less,scss,json,yml,yaml}": [
+		"prettier --write",
+		"node -e \"const fs = require('fs'); process.argv.slice(1).forEach(f => { const c = fs.readFileSync(f, 'utf8'); fs.writeFileSync(f, c.trimEnd()); })\""
+	],
+	"*.{js,jsx,ts,tsx}": "eslint --fix"
 }
