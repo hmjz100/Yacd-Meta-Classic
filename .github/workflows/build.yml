@@ -1,36 +1,42 @@
-name: Build
+name: 构建
+
 on:
-    push:
-        branches:
-            - main
     workflow_dispatch:
+    push:
+        paths:
+            - 'src/**'
+            - 'assets/**'
+            - 'docker/**'
 
 jobs:
     build:
+        name: Build Web Page
         runs-on: ubuntu-latest
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         steps:
-            - name: Checkout Dashboard code
-              uses: actions/checkout@v4 # 升级到 v4
+            - name: 检查仓库
+              uses: actions/checkout@v4
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v3 # 升级到 v3
+            - name: 安装 pnpm
+              uses: pnpm/action-setup@v3
               with:
                   version: latest
 
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4 # 升级到 v4
+            - name: 安装 Node.js
+              uses: actions/setup-node@v4
               with:
-                  node-version: '18.x'
                   cache: 'pnpm'
 
-            - name: Install package and build
-              run: |
-                  pnpm install --no-frozen-lockfile
-                  pnpm build
+            - name: Node - 安装依赖
+              run: pnpm install --no-frozen-lockfile
 
-            - name: Upload Build Artifact
+            - name: Node - 构建
+              run: pnpm build
+
+            - name: 上传文件
               uses: actions/upload-artifact@v4
               with:
-                  name: dashboard-build-artifact
-                  path: public/
+                  name: Yacd-Meta-Classic
+                  path: public/**/*
                   retention-days: 90
