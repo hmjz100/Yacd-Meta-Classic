@@ -4,22 +4,19 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'package.json'
-      - '.npmrc'
-      - 'pnpm-lock.yaml'
       - 'src/**'
       - 'assets/**'
       - 'docker/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/build.yml'
 
 jobs:
   build:
     name: Build Web Page
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: 检查仓库
+      - name: 检出仓库
         uses: actions/checkout@v7
 
       - name: 安装 pnpm
@@ -44,3 +41,4 @@ jobs:
           name: Yacd-Meta-Classic
           path: public/**/*
           retention-days: 90
+          compression-level: 9

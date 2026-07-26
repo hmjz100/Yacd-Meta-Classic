@@ -4,20 +4,17 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'package.json'
-      - '.npmrc'
-      - 'pnpm-lock.yaml'
       - 'src/**'
       - 'assets/**'
       - 'docker/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/deploy.yml'
 
 jobs:
   deploy:
     name: Deploy Web Page
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: 检出仓库
         uses: actions/checkout@v7
