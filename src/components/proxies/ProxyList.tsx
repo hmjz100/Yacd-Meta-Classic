@@ -151,12 +151,12 @@ export function ProxyList({ all, now, isSelectable, itemOnTapCallback }: ProxyLi
 	const rowHeight = itemHeight + gap;
 
 	const { columns, itemWidth } = useMemo(() => {
-		if (containerWidth === 0 || isMobile) {
-			return { columns: 1, itemWidth: containerWidth || 200 };
+		if (containerWidth === 0) {
+			return { columns: 1, itemWidth: containerWidth || 100 };
 		}
 		const scrollbarReserve = 20;
 		const availableWidth = containerWidth - scrollbarReserve;
-		const minItemWidth = 200;
+		const minItemWidth = isMobile ? 150 : 200;
 		const calculatedColumns = Math.floor((availableWidth + gap) / (minItemWidth + gap));
 		const cols = Math.max(1, calculatedColumns);
 		const width = Math.floor((availableWidth - gap * (cols - 1)) / cols);
