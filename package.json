@@ -5,12 +5,6 @@
 	"author": "hmjz100 (https://github.com/hmjz100)",
 	"license": "MIT",
 	"private": true,
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"core-js",
-			"esbuild"
-		]
-	},
 	"keywords": [
 		"react",
 		"clash"
