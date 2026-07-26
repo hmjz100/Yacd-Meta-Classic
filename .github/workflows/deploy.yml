@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - 'package.json'
+      - '.npmrc'
+      - 'pnpm-lock.yaml'
       - 'src/**'
       - 'assets/**'
       - 'docker/**'
