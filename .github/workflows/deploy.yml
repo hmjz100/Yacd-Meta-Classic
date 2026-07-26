@@ -39,7 +39,7 @@ jobs:
         run: pnpm build
 
       - name: 部署到 Github Pages
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: crazy-max/ghaction-github-pages@v5
         with:
           target_branch: gh-pages
           build_dir: public

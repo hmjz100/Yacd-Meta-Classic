@@ -1,14 +1,16 @@
 import cx from 'clsx';
 import * as React from 'react';
-import Modal, { Props as ReactModalProps } from 'react-modal';
+import Modal from 'react-modal';
 
 import s0 from './Modal.module.scss';
-type Props = ReactModalProps & {
+type Props = {
 	isOpen: boolean;
 	onRequestClose: (...args: any[]) => any;
 	children: React.ReactNode;
 	className?: string;
 	overlayClassName?: string;
+	shouldCloseOnOverlayClick?: boolean;
+	shouldCloseOnEsc?: boolean;
 };
 function ModalAPIConfig({
 	isOpen,
