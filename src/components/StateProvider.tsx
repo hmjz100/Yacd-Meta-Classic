@@ -1,6 +1,8 @@
 import * as immer from 'immer';
 import { produce } from 'immer';
 import React from 'react';
+
+import shallowEqual from '~/misc/shallowEqual';
 // in logs store we update logs in place
 // outside of immer produce
 // this is just workaround
@@ -60,11 +62,22 @@ export function connect(mapStateToProps: any) {
 		function Connected(props: any) {
 			const state = useContext(StateContext);
 			const dispatch = useContext(DispatchContext);
+			const prevMappedRef = useRef<any>(null);
 			const mapped = mapStateToProps(state, props);
-			const nextProps = { dispatch, ...props, ...mapped };
+			const finalMapped = useMemo(() => {
+				if (prevMappedRef.current && shallowEqual(prevMappedRef.current, mapped)) {
+					return prevMappedRef.current;
+				}
+				prevMappedRef.current = mapped;
+				return mapped;
+			}, [mapped]);
+			const nextProps = useMemo(
+				() => ({ dispatch, ...props, ...finalMapped }),
+				[dispatch, props, finalMapped],
+			);
 			return <MemoComponent {...nextProps} />;
 		}
-		return Connected;
+		return memo(Connected);
 	};
 }
 // steal from https://github.com/reduxjs/redux/blob/master/src/bindActionCreators.ts

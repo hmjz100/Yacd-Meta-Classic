@@ -53,7 +53,6 @@ function MemoryChart({ apiConfig, selectedChartStyleIndex }) {
 	);
 	useLineChartMemory(ChartMod.Chart, 'MemoryChart', data, memory);
 	return (
-		// @ts-expect-error ts-migrate(2322) FIXME: Type '{ position: string; maxWidth: number; }' is ... Remove this comment to see the full error message
 		<div style={chartWrapperStyle}>
 			<canvas id="MemoryChart" style={canvasWrapperStyle} className={s0.TrafficChart} />
 		</div>

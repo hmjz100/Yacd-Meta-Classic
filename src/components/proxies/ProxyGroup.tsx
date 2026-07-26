@@ -19,7 +19,30 @@ import { connect, useStoreActions } from '../StateProvider';
 import { useFilteredAndSorted } from './hooks';
 import s0 from './ProxyGroup.module.scss';
 import { ProxyList, ProxyListSummaryView } from './ProxyList';
+
 const { createElement, useCallback, useMemo, useState, useEffect } = React;
+
+function useWindowWidth() {
+	const [windowWidth, setWindowWidth] = useState(
+		typeof window !== 'undefined' ? window.innerWidth : 1024,
+	);
+	useEffect(() => {
+		let timeoutId: ReturnType<typeof setTimeout>;
+		const handleResize = () => {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(() => {
+				setWindowWidth(window.innerWidth);
+			}, 100);
+		};
+		window.addEventListener('resize', handleResize, { passive: true });
+		return () => {
+			window.removeEventListener('resize', handleResize);
+			clearTimeout(timeoutId);
+		};
+	}, []);
+	return windowWidth;
+}
+
 function ZapWrapper() {
 	return (
 		<div className={s0.zapWrapper}>
@@ -27,6 +50,7 @@ function ZapWrapper() {
 		</div>
 	);
 }
+
 function ProxyGroupImpl({
 	name,
 	all: allItems,
@@ -77,23 +101,22 @@ function ProxyGroupImpl({
 		} catch (err) {}
 		setIsTestingLatency(false);
 	}, [all, apiConfig, dispatch, name, version.meta, latencyTestUrl, requestDelayForProxies]);
-	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-	const updateWindowWidth = () => {
-		setWindowWidth(window.innerWidth);
-	};
-	useEffect(() => {
-		window.addEventListener('resize', updateWindowWidth);
-		return () => window.removeEventListener('resize', updateWindowWidth);
-	}, []);
+
+	const windowWidth = useWindowWidth();
+	const isMobile = windowWidth <= 768;
+
+	const headerStyle = useMemo(
+		() => ({
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'space-between',
+		}),
+		[],
+	);
+
 	return (
 		<div className={s0.group}>
-			<div
-				style={{
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: windowWidth > 768 ? 'start' : 'space-between',
-				}}
-			>
+			<div style={headerStyle}>
 				<CollapsibleSectionHeader
 					name={name}
 					type={type}
@@ -101,8 +124,16 @@ function ProxyGroupImpl({
 					qty={all.length}
 				/>
 				<div style={{ display: 'flex' }}>
-					{windowWidth > 768 ? (
+					{isMobile ? (
 						<>
+							<Button
+								title="Test latency"
+								kind="minimal"
+								onClick={testLatency}
+								isLoading={isTestingLatency}
+							>
+								<ZapWrapper />
+							</Button>
 							<Button
 								kind="minimal"
 								onClick={toggle}
@@ -112,27 +143,11 @@ function ProxyGroupImpl({
 								<span className={cx(s0.arrow, { [s0.isOpen]: isOpen })}>
 									<ChevronDown size={20} />
 								</span>
-							</Button>
-							<Button
-								title="Test latency"
-								kind="minimal"
-								onClick={testLatency}
-								isLoading={isTestingLatency}
-							>
-								<ZapWrapper />
 							</Button>
 						</>
 					) : (
 						<>
 							<Button
-								title="Test latency"
-								kind="minimal"
-								onClick={testLatency}
-								isLoading={isTestingLatency}
-							>
-								<ZapWrapper />
-							</Button>
-							<Button
 								kind="minimal"
 								onClick={toggle}
 								className={s0.btn}
@@ -141,6 +156,14 @@ function ProxyGroupImpl({
 								<span className={cx(s0.arrow, { [s0.isOpen]: isOpen })}>
 									<ChevronDown size={20} />
 								</span>
+							</Button>
+							<Button
+								title="Test latency"
+								kind="minimal"
+								onClick={testLatency}
+								isLoading={isTestingLatency}
+							>
+								<ZapWrapper />
 							</Button>
 						</>
 					)}
@@ -155,6 +178,7 @@ function ProxyGroupImpl({
 		</div>
 	);
 }
+
 export const ProxyGroup = connect((s, { name, delay }) => {
 	const proxies = getProxies(s);
 	const collapsibleIsOpen = getCollapsibleIsOpen(s);

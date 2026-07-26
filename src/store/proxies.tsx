@@ -106,16 +106,21 @@ export function updateProviders(apiConfig: ClashAPIConfig, names: string[]) {
 		dispatch(fetchProxies(apiConfig));
 	};
 }
-async function healthcheckProviderByNameInternal(apiConfig: ClashAPIConfig, name: string) {
+async function healthcheckProviderByNameInternal(
+	apiConfig: ClashAPIConfig,
+	name: string,
+	latencyTestUrl: string,
+) {
 	try {
-		await proxiesAPI.healthcheckProviderByName(apiConfig, name);
+		await proxiesAPI.healthcheckProviderByName(apiConfig, name, latencyTestUrl);
 	} catch (x) {
 		// ignore
 	}
 }
 export function healthcheckProviderByName(apiConfig: ClashAPIConfig, name: string) {
-	return async (dispatch: DispatchFn) => {
-		await healthcheckProviderByNameInternal(apiConfig, name);
+	return async (dispatch: DispatchFn, getState: GetStateFn) => {
+		const latencyTestUrl = getLatencyTestUrl(getState());
+		await healthcheckProviderByNameInternal(apiConfig, name, latencyTestUrl);
 		// should be optimized
 		// but ¯\_(ツ)_/¯
 		await dispatch(fetchProxies(apiConfig));
@@ -298,10 +303,11 @@ export function requestDelayAll(apiConfig: ClashAPIConfig) {
 	return async (dispatch: DispatchFn, getState: GetStateFn) => {
 		const proxyNames = getDangleProxyNames(getState());
 		await Promise.all(proxyNames.map((p) => dispatch(requestDelayForProxy(apiConfig, p))));
+		const latencyTestUrl = getLatencyTestUrl(getState());
 		const proxyProviders = getProxyProviders(getState());
 		// one by one
 		for (const p of proxyProviders) {
-			await healthcheckProviderByNameInternal(apiConfig, p.name);
+			await healthcheckProviderByNameInternal(apiConfig, p.name, latencyTestUrl);
 		}
 		await dispatch(fetchProxies(apiConfig));
 	};
@@ -316,7 +322,12 @@ export function healthcheckProxy(apiConfig: ClashAPIConfig, name: string) {
 			const providerName = proxy?.providerName;
 			const latencyTestUrl = getLatencyTestUrl(getState());
 			const res = providerName
-				? await proxiesAPI.healthcheckProviderProxy(apiConfig, providerName, name)
+				? await proxiesAPI.healthcheckProviderProxy(
+						apiConfig,
+						providerName,
+						name,
+						latencyTestUrl,
+				  )
 				: await proxiesAPI.requestDelayForProxy(apiConfig, name, latencyTestUrl);
 			if (res.ok === false) {
 				error = res.statusText;

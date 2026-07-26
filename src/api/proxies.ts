@@ -58,11 +58,16 @@ export async function updateProviderByName(config, name) {
 	const options = { ...init, method: 'PUT' };
 	return await fetch(url + '/providers/proxies/' + encodeURIComponent(name), options);
 }
-export async function healthcheckProviderByName(config, name) {
+export async function healthcheckProviderByName(
+	config,
+	name,
+	latencyTestUrl = 'https://www.gstatic.com/generate_204',
+) {
 	const { url, init } = getURLAndInit(config);
 	const options = { ...init, method: 'GET' };
+	const qs = `url=${encodeURIComponent(latencyTestUrl)}&timeout=5000`;
 	return await fetch(
-		url + '/providers/proxies/' + encodeURIComponent(name) + '/healthcheck',
+		`${url}/providers/proxies/${encodeURIComponent(name)}/healthcheck?${qs}`,
 		options,
 	);
 }
@@ -70,13 +75,15 @@ export async function healthcheckProviderProxy(
 	config: ClashAPIConfig,
 	providerName: string,
 	proxyName: string,
+	latencyTestUrl = 'https://www.gstatic.com/generate_204',
 ) {
 	const { url, init } = getURLAndInit(config);
 	const options = { ...init, method: 'GET' };
+	const qs = `url=${encodeURIComponent(latencyTestUrl)}&timeout=5000`;
 	return await fetch(
 		`${url}/providers/proxies/${encodeURIComponent(providerName)}/${encodeURIComponent(
 			proxyName,
-		)}/healthcheck`,
+		)}/healthcheck?${qs}`,
 		options,
 	);
 }

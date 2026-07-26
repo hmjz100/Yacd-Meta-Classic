@@ -2,6 +2,9 @@ import cx from 'clsx';
 import * as React from 'react';
 
 import s0 from './ProxyLatency.module.scss';
+
+const { memo, useCallback } = React;
+
 type ProxyLatencyProps = {
 	number?: number;
 	color: string;
@@ -9,7 +12,14 @@ type ProxyLatencyProps = {
 	error?: string;
 	onClick?: () => void;
 };
-export function ProxyLatency({ number, color, isTesting, error, onClick }: ProxyLatencyProps) {
+
+export const ProxyLatency = memo(function ProxyLatency({
+	number,
+	color,
+	isTesting,
+	error,
+	onClick,
+}: ProxyLatencyProps) {
 	const hasNumber = typeof number === 'number';
 	const label = isTesting ? 'Testing...' : hasNumber ? `${number} ms` : error || '--';
 	const className = cx(s0.proxyLatency, {
@@ -17,7 +27,7 @@ export function ProxyLatency({ number, color, isTesting, error, onClick }: Proxy
 		[s0.placeholder]: !hasNumber || Boolean(error),
 		[s0.testing]: isTesting,
 	});
-	const handleClick = React.useCallback(
+	const handleClick = useCallback(
 		(e: React.MouseEvent) => {
 			if (!onClick || isTesting) return;
 			e.preventDefault();
@@ -26,7 +36,7 @@ export function ProxyLatency({ number, color, isTesting, error, onClick }: Proxy
 		},
 		[isTesting, onClick],
 	);
-	const handleKeyDown = React.useCallback(
+	const handleKeyDown = useCallback(
 		(e: React.KeyboardEvent) => {
 			if (!onClick || isTesting) return;
 			if (e.key === 'Enter' || e.key === ' ') {
@@ -50,4 +60,4 @@ export function ProxyLatency({ number, color, isTesting, error, onClick }: Proxy
 			<span>{label}</span>
 		</span>
 	);
-}
+});
