@@ -1,42 +1,44 @@
 name: 构建
 
 on:
-    workflow_dispatch:
-    push:
-        paths:
-            - 'src/**'
-            - 'assets/**'
-            - 'docker/**'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'src/**'
+      - 'assets/**'
+      - 'docker/**'
+      - '.github/workflows/build.yml'
 
 jobs:
-    build:
-        name: Build Web Page
-        runs-on: ubuntu-latest
-        env:
-            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-        steps:
-            - name: 检查仓库
-              uses: actions/checkout@v4
+  build:
+    name: Build Web Page
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 检查仓库
+        uses: actions/checkout@v4
 
-            - name: 安装 pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: latest
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
 
-            - name: 安装 Node.js
-              uses: actions/setup-node@v4
-              with:
-                  cache: 'pnpm'
+      - name: 安装 Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: 'pnpm'
 
-            - name: Node - 安装依赖
-              run: pnpm install --no-frozen-lockfile
+      - name: Node - 安装依赖
+        run: pnpm install --no-frozen-lockfile
 
-            - name: Node - 构建
-              run: pnpm build
+      - name: Node - 构建
+        run: pnpm build
 
-            - name: 上传文件
-              uses: actions/upload-artifact@v4
-              with:
-                  name: Yacd-Meta-Classic
-                  path: public/**/*
-                  retention-days: 90
+      - name: 上传文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: Yacd-Meta-Classic
+          path: public/**/*
+          retention-days: 90

@@ -1,43 +1,45 @@
 name: 部署
 
 on:
-    workflow_dispatch:
-    push:
-        paths:
-            - 'src/**'
-            - 'assets/**'
-            - 'docker/**'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'src/**'
+      - 'assets/**'
+      - 'docker/**'
+      - '.github/workflows/deploy.yml'
 
 jobs:
-    build:
-        name: Build Web Page
-        runs-on: ubuntu-latest
+  deploy:
+    name: Deploy Web Page
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 检查仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: 'pnpm'
+
+      - name: Node - 安装依赖
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Node - 构建
+        run: pnpm build
+
+      - name: 部署到 Github Pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
         env:
-            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-        steps:
-            - name: 检查仓库
-              uses: actions/checkout@v4
-
-            - name: 安装 pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: latest
-
-            - name: 安装 Node.js
-              uses: actions/setup-node@v4
-              with:
-                  cache: 'pnpm'
-
-            - name: Node - 安装依赖
-              run: pnpm install --no-frozen-lockfile
-
-            - name: Node - 构建
-              run: pnpm build
-
-            - name: 部署到 Github Pages
-              uses: crazy-max/ghaction-github-pages@v2
-              with:
-                  target_branch: gh-pages
-                  build_dir: public
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
