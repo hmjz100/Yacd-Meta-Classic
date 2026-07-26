@@ -19,8 +19,8 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: 检查仓库
-        uses: actions/checkout@v4
+      - name: 检出仓库
+        uses: actions/checkout@v7
 
       - name: 安装 pnpm
         uses: pnpm/action-setup@v6
